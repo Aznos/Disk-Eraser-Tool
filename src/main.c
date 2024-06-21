@@ -19,7 +19,11 @@ int main(int argc, char** argv) {
         input[strcspn(input, "\n")] = 0;
         if(strcmp(input, "I am sure") == 0) {
             printf("Placeholder\n");
+        } else {
+            printf("%s\nQuitting program..\n", YELLOW);
         }
+    } else {
+        printf("%s\nQuitting program..\n", YELLOW);
     }
 
     return 0;
