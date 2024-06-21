@@ -6,42 +6,44 @@
 #include "include/main.h"
 
 void getDisks(struct DISK_INFO disks[], int* numDisks) {
-    FILE *fp;
-    char path[1035];
     int diskCount = 0;
+    char command[50];
+    char path[1035];
+    FILE *fp;
 
-    fp = popen("diskutil list", "r");
-    if(fp == NULL) {
-        printf("%sFailed to run, make sure you're running on OSX", RED);
-        exit(1);
-    }
+    for(int i = 0; i < MAX_DISKS; i++) {
+        snprintf(command, sizeof(command), "diskutil info / dev/disk%d | grep 'Total Size'", i);
+        fp = popen(command, "r");
+        if(fp == NULL) {
+            printf("%sFailed to run, make sure you're running on OSX\n", RED);
+            exit(1);
+        }
 
-    while(fgets(path, sizeof(path) - 1, fp) != NULL) {
-        if(strstr(path, "dev/disk") != NULL && diskCount < MAX_DISKS) {
-            bool sizeFound = false;
-            while(fgets(path, sizeof(path) - 1, fp) != NULL && !sizeFound) {
-                if(strstr(path, "GB") != NULL) {
-                    float sizeGB;
-                    sscanf(path, " * %f GB", &sizeGB);
-                    disks[diskCount].size = (unsigned int)(sizeGB * 1024); //Convert GB to MB
-                    sizeFound = true;
-                } else if(strstr(path, "TB") != NULL) {
-                    float sizeTB;
-                    sscanf(path, " * %f TB", &sizeTB);
-                    disks[diskCount].size = (unsigned int)(sizeTB * 1024 * 1024); //Convert TB to MB
-                } else if(strstr(path, "MB") != NULL) {
-                    float sizeMB;
-                    sscanf(path, " * %f MB", &sizeMB);
-                    disks[diskCount].size = (unsigned int)sizeMB;
-                    sizeFound = true;
-                }
+        if(fgets(path, sizeof(path) - 1, fp) != NULL) {
+            if(strstr(path, "GB") != NULL) {
+                float sizeGB;
+                sscanf(path, " * Total Size: %f GB", &sizeGB);
+                disks[diskCount].size = (unsigned int)(sizeGB * 1024); //Convert GB to MB
+            } else if(strstr(path, "TB") != NULL) {
+                float sizeTB;
+                sscanf(path, " * Total Size: %f TB", &sizeTB);
+                disks[diskCount].size = (unsigned int)(sizeTB * 1024 * 1024); //Convert TB to MB
+            } else if(strstr(path, "MB") != NULL) {
+                float sizeMB;
+                sscanf(path, " * Total Size: %f MB", &sizeMB);
+                disks[diskCount].size = (unsigned int)sizeMB;
+            } else {
+                disks[diskCount].size = 0;
             }
 
             diskCount++;
+        } else {
+            break;
         }
+
+        pclose(fp);
     }
 
-    pclose(fp);
     *numDisks = diskCount;
 }
 
