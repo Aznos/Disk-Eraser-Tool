@@ -5,8 +5,8 @@
 
 void getDisks(struct DISK_INFO disks[]) {
     disks[0].size = 512;
-    disks[1].size = 1000;
-    disks[2].size = 2000;
+    disks[1].size = 1024;
+    disks[2].size = 20480000;
 }
 
 int main(int argc, char** argv) {
@@ -32,7 +32,13 @@ int main(int argc, char** argv) {
             diskManager.getDisks(disks);
             for(int i = 0; i < DISKS; i++) {
                 unsigned int diskNum = i + 1;
-                printf("%sDisk Number: %s%u\n%sDisk Size: %s%uMB\n\n", CYAN, BCYAN, diskNum, CYAN, BCYAN, disks[i].size);
+                if(disks[i].size >= 1024 * 1024) {
+                    printf("%sDisk Number: %s%u\n%sDisk Size: %s%u TB\n\n", CYAN, BCYAN, diskNum, CYAN, BCYAN, disks[i].size / (1024 * 1024));
+                } else if(disks[i].size >= 1024) {
+                    printf("%sDisk Number: %s%u\n%sDisk Size: %s%u GB\n\n", CYAN, BCYAN, diskNum, CYAN, BCYAN, disks[i].size / 1024);
+                } else {
+                    printf("%sDisk Number: %s%u\n%sDisk Size: %s%u MB\n\n", CYAN, BCYAN, diskNum, CYAN, BCYAN, disks[i].size);
+                }
             }
         } else {
             printf("%s\nQuitting program..\n", YELLOW);
