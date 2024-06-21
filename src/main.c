@@ -12,7 +12,7 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
     FILE *fp;
 
     for(int i = 0; i < MAX_DISKS; i++) {
-        snprintf(command, sizeof(command), "diskutil info / dev/disk%d | grep 'Total Size'", i);
+        snprintf(command, sizeof(command), "diskutil info /dev/disk%d | grep 'Disk Size'", i);
         fp = popen(command, "r");
         if(fp == NULL) {
             printf("%sFailed to run, make sure you're running on OSX\n", RED);
