@@ -47,6 +47,10 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
     *numDisks = diskCount;
 }
 
+void eraseDisk(struct DISK_INFO disk, int num) {
+    printf("Erasing disk %d\n", num + 1);
+}
+
 int main(int argc, char** argv) {
     DiskManager diskManager = {getDisks};
     struct DISK_INFO disks[MAX_DISKS];
@@ -90,7 +94,9 @@ int main(int argc, char** argv) {
                 input[strcspn(input, "\n")] = 0;
 
                 if(strcmp(input, "yes") == 0) {
-                    printf("%sDeleting..\n", YELLOW);
+                    for(int i = 0; i < numDisks; i++) {
+                        eraseDisk(disks[i], i);
+                    }
                 } else {
                     printf("%s\nQuitting program..\n", YELLOW);
                 }
@@ -100,7 +106,7 @@ int main(int argc, char** argv) {
                 input[strcspn(input, "\n")] = 0;
 
                 if(strcmp(input, "yes") == 0) {
-                    printf("%sDeleting..\n", YELLOW);
+                    eraseDisk(disks[atoi(input) - 1], atoi(input) - 1);
                 } else {
                     printf("%s\nQuitting program..\n", YELLOW);
                 }
