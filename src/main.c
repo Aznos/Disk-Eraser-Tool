@@ -79,6 +79,34 @@ int main(int argc, char** argv) {
                     printf("%sDisk Number: %s%d\n%sDisk Size: %s%u MB\n\n", CYAN, BCYAN, i + 1, CYAN, BCYAN, disks[i].size);
                 }
             }
+
+            printf("%s> ", WHITE);
+            fgets(input, sizeof(input), stdin);
+            input[strcspn(input, "\n")] = 0;
+
+            if(strcmp(input, "all") == 0) {
+                printf("%sAre you sure you want to wipe all disks? This action is %sIRREVERSIBLE%s\nIf you are sure you want to proceed, type \"yes\" and press Enter\n\n%s> ", YELLOW, BHRED, RED, WHITE);
+                fgets(input, sizeof(input), stdin);
+                input[strcspn(input, "\n")] = 0;
+
+                if(strcmp(input, "yes") == 0) {
+                    printf("%sDeleting..", YELLOW);
+                } else {
+                    printf("%s\nQuitting program..\n", YELLOW);
+                }
+            } else if(atoi(input) > 0 && atoi(input) <= numDisks) {
+                printf("%sAre you sure you want to wipe disk %s%d%s? This action is %sIRREVERSIBLE%s\nIf you are sure you want to proceed, type \"yes\" and press Enter\n\n%s> ", YELLOW, BCYAN, atoi(input), YELLOW, BHRED, RED, WHITE);
+                fgets(input, sizeof(input), stdin);
+                input[strcspn(input, "\n")] = 0;
+
+                if(strcmp(input, "yes") == 0) {
+                    printf("%sDeleting..", YELLOW);
+                } else {
+                    printf("%s\nQuitting program..\n", YELLOW);
+                }
+            } else {
+                printf("%sInvalid disk number\nQuitting program..\n", YELLOW);
+            }
         } else {
             printf("%s\nQuitting program..\n", YELLOW);
         }
