@@ -5,7 +5,6 @@
 
 struct DISK_INFO {
     unsigned int size;
-    unsigned int number;
 };
 
 typedef struct {
