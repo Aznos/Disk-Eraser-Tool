@@ -19,26 +19,26 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
             exit(1);
         }
 
-        if(fgets(path, sizeof(path) - 1, fp) != NULL) {
-            if(strstr(path, "GB") != NULL) {
+        if (fgets(path, sizeof(path) - 1, fp) != NULL) {
+            if (strstr(path, "GB") != NULL) {
                 float sizeGB;
-                sscanf(path, " * Total Size: %f GB", &sizeGB);
-                disks[diskCount].size = (unsigned int)(sizeGB * 1024); //Convert GB to MB
-            } else if(strstr(path, "TB") != NULL) {
+                sscanf(path, "   Disk Size: %f GB", &sizeGB);
+                disks[diskCount].size = (unsigned int)(sizeGB * 1024); // Convert GB to MB
+            } else if (strstr(path, "TB") != NULL) {
                 float sizeTB;
-                sscanf(path, " * Total Size: %f TB", &sizeTB);
-                disks[diskCount].size = (unsigned int)(sizeTB * 1024 * 1024); //Convert TB to MB
-            } else if(strstr(path, "MB") != NULL) {
+                sscanf(path, "   Disk Size: %f TB", &sizeTB);
+                disks[diskCount].size = (unsigned int)(sizeTB * 1024 * 1024); // Convert TB to MB
+            } else if (strstr(path, "MB") != NULL) {
                 float sizeMB;
-                sscanf(path, " * Total Size: %f MB", &sizeMB);
+                sscanf(path, "   Disk Size: %f MB", &sizeMB);
                 disks[diskCount].size = (unsigned int)sizeMB;
             } else {
-                disks[diskCount].size = 0;
+                disks[diskCount].size = 0; // If size is not found or recognized
             }
 
             diskCount++;
         } else {
-            break;
+            break; // No more disks found
         }
 
         pclose(fp);
