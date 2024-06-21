@@ -18,16 +18,6 @@
 #define BCYAN "\e[1;36m"
 #define BWHITE "\e[1;37m"
 
-//Regular underline text
-#define UBLACK "\e[4;30m"
-#define URED "\e[4;31m"
-#define UGREEN "\e[4;32m"
-#define UYELLOW "\e[4;33m"
-#define UBLUE "\e[4;34m"
-#define UMAGENTA "\e[4;35m"
-#define UCYAN "\e[4;36m"
-#define UWHTE "\e[4;37m"
-
 //Regular background
 #define BLACKB "\e[40m"
 #define REDB "\e[41m"
@@ -37,6 +27,7 @@
 #define MAGENTAB "\e[45m"
 #define CYANB "\e[46m"
 #define WHITEB "\e[47m"
+#define TRANSPARENTB "\e[49m"
 
 //High intensty background 
 #define BLACKHB "\e[0;100m"
@@ -67,6 +58,9 @@
 #define BHMAGENTA "\e[1;95m"
 #define BHCYAN "\e[1;96m"
 #define BHWHITE "\e[1;97m"
+
+//Clear
+#define CLEAR_TERMINAL "\e[1;1H\e[2J"
 
 //CREDIT: https://gist.github.com/RabaDabaDoba/145049536f815903c79944599c6f952a
 //The names were modified, but the original code is the same
