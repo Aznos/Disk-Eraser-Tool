@@ -90,7 +90,7 @@ int main(int argc, char** argv) {
                 input[strcspn(input, "\n")] = 0;
 
                 if(strcmp(input, "yes") == 0) {
-                    printf("%sDeleting..", YELLOW);
+                    printf("%sDeleting..\n", YELLOW);
                 } else {
                     printf("%s\nQuitting program..\n", YELLOW);
                 }
@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
                 input[strcspn(input, "\n")] = 0;
 
                 if(strcmp(input, "yes") == 0) {
-                    printf("%sDeleting..", YELLOW);
+                    printf("%sDeleting..\n", YELLOW);
                 } else {
                     printf("%s\nQuitting program..\n", YELLOW);
                 }
