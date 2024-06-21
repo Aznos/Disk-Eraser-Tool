@@ -18,7 +18,9 @@ int main(int argc, char** argv) {
         fgets(input, sizeof(input), stdin);
         input[strcspn(input, "\n")] = 0;
         if(strcmp(input, "I am sure") == 0) {
-            printf("Placeholder\n");
+            printf("%sWhich disk do you want to wipe:\n", YELLOW, WHITE);
+            
+            //getDisks();
         } else {
             printf("%s\nQuitting program..\n", YELLOW);
         }
