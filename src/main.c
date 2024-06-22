@@ -81,7 +81,7 @@ void overwriteDisk(const char* diskPath, bool random, unsigned long long size) {
         size -= written;
 
         time_t currentTime = time(NULL);
-        if(difftime(currentTime, lastPrinttime) >= 5.0) {
+        if(difftime(currentTime, lastPrinttime) >= 1.0) {
             double elapsedTime = difftime(currentTime, startTime);
             double writeSpeed = totalWritten / elapsedTime; //BPS
             unsigned long long bytesLeft = totalWritten + size;
