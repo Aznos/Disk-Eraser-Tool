@@ -126,7 +126,7 @@ int main(int argc, char** argv) {
 
     if(strcmp(input, "I understand") == 0) {
         printf("%s%s!!! WARNING !!!\n", BBLACK, REDB);
-        printf("%sAre you sure you want to proceed? This action is %sIRREVERSIBLE%s\nIf you are sure you want to proceed, type \"I am sure\" and press Enter\n\n%s> ", TRANSPARENTB, BHRED, RED, WHITE);
+        printf("%s%sAre you sure you want to proceed? This action is %sIRREVERSIBLE%s\nIf you are sure you want to proceed, type \"I am sure\" and press Enter\n\n%s> ", TRANSPARENTB, RED, BHRED, RED, WHITE);
 
         fgets(input, sizeof(input), stdin);
         input[strcspn(input, "\n")] = 0;
