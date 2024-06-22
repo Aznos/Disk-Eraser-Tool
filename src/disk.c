@@ -1,6 +1,7 @@
 #include "include/disk.h"
 #include "include/colors.h"
 #include "include/main.h"
+#include "include/util.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -30,7 +31,8 @@ void overwriteDisk(const char* diskPath, bool random, unsigned long long size) {
             memset(buffer, '0', sizeof(buffer));
         }
 
-        ssize_t written = write(disk, buffer, sizeof(buffer));
+        ssize_t toWrite = size < BUFFER_SIZE ? size : BUFFER_SIZE;
+        ssize_t written = write(disk, buffer, toWrite);
         if(written < 0) {
             printf("%sFailed to write to disk %s\n", RED, diskPath);
             break;
@@ -42,27 +44,12 @@ void overwriteDisk(const char* diskPath, bool random, unsigned long long size) {
         time_t currentTime = time(NULL);
         if(difftime(currentTime, lastPrinttime) >= 1.0) {
             double elapsedTime = difftime(currentTime, startTime);
-            double writeSpeed = totalWritten / elapsedTime; //BPS
-            unsigned long long bytesLeft = totalWritten + size;
-            double estimated = bytesLeft / writeSpeed;
-
-            if(estimated >= 86400) {
-                estimated /= 86400;
-                printf("%s%llu/%llu bytes written (%.2f%%)\nEstimated time remaining: %.2f days\n", YELLOW, totalWritten, totalWritten + size, (double)totalWritten / (double)(totalWritten + size) * 100, estimated);
-            } else if(estimated >= 3600) {
-                estimated /= 3600;
-                printf("%s%llu/%llu bytes written (%.2f%%)\nEstimated time remaining: %.2f hours\n", YELLOW, totalWritten, totalWritten + size, (double)totalWritten / (double)(totalWritten + size) * 100, estimated);
-            } else if(estimated >= 60) {
-                estimated /= 60;
-                printf("%s%llu/%llu bytes written (%.2f%%)\nEstimated time remaining: %.2f minutes\n", YELLOW, totalWritten, totalWritten + size, (double)totalWritten / (double)(totalWritten + size) * 100, estimated);
-            } else {
-                printf("%s%llu/%llu bytes written (%.2f%%)\nEstimated time remaining: %.2f seconds\n", YELLOW, totalWritten, totalWritten + size, (double)totalWritten / (double)(totalWritten + size) * 100, estimated);
-            }
-
+            printProgress(totalWritten, totalWritten + size, elapsedTime);
             lastPrinttime = currentTime;
         }
     }
-    
+
+    printf("\n");
     close(disk);
 }
 
