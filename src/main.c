@@ -57,7 +57,7 @@ void overwriteDisk(const char* diskPath, bool random, unsigned long long size) {
         return;
     }
 
-    unsigned char buffer[1024];
+    unsigned char buffer[BUFFER_SIZE];
     unsigned long long totalWritten = 0;
     time_t startTime = time(NULL);
     time_t lastPrinttime = startTime;
