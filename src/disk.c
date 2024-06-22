@@ -54,6 +54,7 @@ void overwriteDisk(const char* diskPath, bool random, unsigned long long size) {
 }
 
 void eraseDisk(struct DISK_INFO disk, int num, int passes) {
+    printf(CLEAR_TERMINAL);
     printf("%sErasing disk %d\n", YELLOW, num + 1);
     char diskPath[50];
     snprintf(diskPath, sizeof(diskPath), "/dev/disk%d", num);

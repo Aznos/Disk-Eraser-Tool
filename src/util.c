@@ -61,14 +61,19 @@ void printProgress(unsigned long long totalWritten, unsigned long long totalSize
 
     printf("%s] %d%% - %.2f MB/s - %llu/%llu bytes", TRANSPARENTB, (int)(progress * 100), writeSpeed / MB, totalWritten, totalSize);
 
-    if (estimated >= 86400) {
-        printf(" - Estimated time remaining: %.2f days", estimated / 86400);
-    } else if (estimated >= 3600) {
-        printf(" - Estimated time remaining: %.2f hours", estimated / 3600);
-    } else if (estimated >= 60) {
-        printf(" - Estimated time remaining: %.2f minutes", estimated / 60);
+    int days = estimated / 86400;
+    int hours = (estimated - (days * 86400)) / 3600;
+    int minutes = (estimated - (days * 86400) - (hours * 3600)) / 60;
+    int seconds = estimated - (days * 86400) - (hours * 3600) - (minutes * 60);
+
+    if (days > 0) {
+        printf(" - Estimated time remaining: %d days, %d hours, %d minutes, %d seconds", days, hours, minutes, seconds);
+    } else if (hours > 0) {
+        printf(" - Estimated time remaining: %d hours, %d minutes, %d seconds", hours, minutes, seconds);
+    } else if (minutes > 0) {
+        printf(" - Estimated time remaining: %d minutes, %d seconds", minutes, seconds);
     } else {
-        printf(" - Estimated time remaining: %.2f seconds", estimated);
+        printf(" - Estimated time remaining: %d seconds", seconds);
     }
 
     fflush(stdout);
