@@ -57,28 +57,21 @@ void overwriteDisk(const char* diskPath, bool random, unsigned long long size) {
         return;
     }
 
-    unsigned char *buffer = (unsigned char *)malloc(BUFFER_SIZE);
-    if(buffer == NULL) {
-        printf("%sFailed to allocate buffer\n", RED);
-        close(disk);
-        return;
-    }
-
+    unsigned char buffer[BUFFER_SIZE];
     unsigned long long totalWritten = 0;
     time_t startTime = time(NULL);
-    time_t lastPrintTime = startTime;
-
-    if(random) {
-        for(unsigned long long i = 0; i < BUFFER_SIZE; i++) {
-            buffer[i] = "0123456789ABCDEF"[rand() % 16];
-        }
-    } else {
-        memset(buffer, '0', BUFFER_SIZE);
-    }
+    time_t lastPrinttime = startTime;
 
     while(size > 0) {
-        ssize_t toWrite = size < BUFFER_SIZE ? size : BUFFER_SIZE;
-        ssize_t written = write(disk, buffer, toWrite);
+        if(random) {
+            for(unsigned int i = 0; i < sizeof(buffer); i++) {
+                buffer[i] = "0123456789ABCDEF"[rand() % 16];
+            }
+        } else {
+            memset(buffer, '0', sizeof(buffer));
+        }
+
+        ssize_t written = write(disk, buffer, sizeof(buffer));
         if(written < 0) {
             printf("%sFailed to write to disk %s\n", RED, diskPath);
             break;
@@ -88,10 +81,11 @@ void overwriteDisk(const char* diskPath, bool random, unsigned long long size) {
         size -= written;
 
         time_t currentTime = time(NULL);
-        if(difftime(currentTime, lastPrintTime) >= 5.0) {
+        if(difftime(currentTime, lastPrinttime) >= 5.0) {
             double elapsedTime = difftime(currentTime, startTime);
-            double writeSpeed = totalWritten / elapsedTime; // BPS
-            double estimated = (double)size / writeSpeed;
+            double writeSpeed = totalWritten / elapsedTime; //BPS
+            unsigned long long bytesLeft = totalWritten + size;
+            double estimated = bytesLeft / writeSpeed;
 
             if(estimated >= 86400) {
                 estimated /= 86400;
@@ -106,11 +100,10 @@ void overwriteDisk(const char* diskPath, bool random, unsigned long long size) {
                 printf("%s%llu/%llu bytes written (%.2f%%)\nEstimated time remaining: %.2f seconds\n", YELLOW, totalWritten, totalWritten + size, (double)totalWritten / (double)(totalWritten + size) * 100, estimated);
             }
 
-            lastPrintTime = currentTime;
+            lastPrinttime = currentTime;
         }
     }
     
-    free(buffer);
     close(disk);
 }
 
