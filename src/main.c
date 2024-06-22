@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
+#include <unistd.h>
 #include "include/colors.h"
 #include "include/main.h"
 
@@ -47,8 +49,30 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
     *numDisks = diskCount;
 }
 
+void overwriteDisk(const char* diskPath, const char* pattern) {
+    printf("%sTest\n", RED);
+}
+
 void eraseDisk(struct DISK_INFO disk, int num) {
-    printf("Erasing disk %d\n", num + 1);
+    printf("%sErasing disk %d\n", YELLOW, num + 1);
+    char diskPath[50];
+    snprintf(diskPath, sizeof(diskPath), "dev/disk%d", num);
+
+    for(int i = 0; i < 10; i++) {
+        if(i < 3) {
+            overwriteDisk(diskPath, "0");
+        } else { //Random data 0-9 A-F
+            char pattern[17];
+            for(int j = 0; j < 16; j++) {
+                pattern[j] = "0123456789ABCDEF"[rand() % 16];
+            }
+            pattern[16] = '\0';
+            overwriteDisk(diskPath, pattern);
+        }
+
+        printf("%sPass %d complete\n", YELLOW, i + 1);
+        sleep(0.5);
+    }
 }
 
 int main(int argc, char** argv) {
