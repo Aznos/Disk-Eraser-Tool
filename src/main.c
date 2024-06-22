@@ -100,18 +100,21 @@ int main(int argc, char** argv) {
                 } else {
                     printf("%s\nQuitting program..\n", YELLOW);
                 }
-            } else if(atoi(input) > 0 && atoi(input) <= numDisks) {
-                printf("%sAre you sure you want to wipe disk %s%d%s? This action is %sIRREVERSIBLE%s\nIf you are sure you want to proceed, type \"yes\" and press Enter\n\n%s> ", YELLOW, BCYAN, atoi(input), YELLOW, BHRED, RED, WHITE);
-                fgets(input, sizeof(input), stdin);
-                input[strcspn(input, "\n")] = 0;
-
-                if(strcmp(input, "yes") == 0) {
-                    eraseDisk(disks[atoi(input) - 1], atoi(input) - 1);
-                } else {
-                    printf("%s\nQuitting program..\n", YELLOW);
-                }
             } else {
-                printf("%sInvalid disk number\nQuitting program..\n", YELLOW);
+                int diskNum = atoi(input);
+                if(diskNum > 0 && diskNum <= numDisks) {
+                    printf("%sAre you sure you want to wipe disk %s%d%s? This action is %sIRREVERSIBLE%s\nIf you are sure you want to proceed, type \"yes\" and press Enter\n\n%s> ", YELLOW, BCYAN, diskNum, YELLOW, BHRED, RED, WHITE);
+                    fgets(input, sizeof(input), stdin);
+                    input[strcspn(input, "\n")] = 0;
+
+                    if(strcmp(input, "yes") == 0) {
+                        eraseDisk(disks[diskNum - 1], diskNum - 1);
+                    } else {
+                        printf("%s\nQuitting program..\n", YELLOW);
+                    }
+                } else {
+                    printf("%sInvalid disk number\nQuitting program..\n", YELLOW);
+                }
             }
         } else {
             printf("%s\nQuitting program..\n", YELLOW);
