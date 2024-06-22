@@ -71,7 +71,7 @@ void eraseDisk(struct DISK_INFO disk, int num) {
         }
 
         printf("%sPass %d complete\n", YELLOW, i + 1);
-        sleep(0.5);
+        sleep(1);
     }
 }
 
