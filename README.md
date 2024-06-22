@@ -24,7 +24,8 @@ A simple, safe, and secure disk eraser tool for macOS.
    ```cd Disk-Eraser-Tool```
 3. Compile the project:
    ```make```
-4. Optionally, you can run:
+4. Optionally, you can:
+   Edit the disk name in the Makefile to automatically unmount the disk
    ```make run```
    This will automatically unmount the disk(s) and run the program.
 5. Otherwise, unmount the disk(s) manually and run:
