@@ -2,7 +2,7 @@
 #define MAIN_H
 
 #define MAX_DISKS 16
-#define BUFFER_SIZE (1024 * 1024) //1MB
+#define BUFFER_SIZE (1024 * 1024 * 1024 * 2) //2GB
 #define KB (1024ULL)
 #define MB (1024 * KB)
 #define GB (1024 * MB)
