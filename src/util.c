@@ -59,7 +59,7 @@ void printProgress(unsigned long long totalWritten, unsigned long long totalSize
         else printf("%s", BRED);
     }
 
-    printf("] %d%% - %.2f MB/s - %llu/%llu bytes", (int)(progress * 100), writeSpeed / MB, totalWritten, totalSize);
+    printf("] %d%% - %.2f MB/s - %llu/%llu bytes\n", (int)(progress * 100), writeSpeed / MB, totalWritten, totalSize);
 
     if (estimated >= 86400) {
         printf("Estimated time remaining: %.2f days", estimated / 86400);
