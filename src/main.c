@@ -52,7 +52,7 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
 void overwriteDisk(const char* diskPath, bool random) {
     FILE *disk = fopen(diskPath, "wb");
     if(disk == NULL) {
-        printf("%sFailed to open disk %s", RED, diskPath);
+        printf("%sFailed to open disk %s\n", RED, diskPath);
         return;
     }
 
@@ -72,10 +72,10 @@ void overwriteDisk(const char* diskPath, bool random) {
 void eraseDisk(struct DISK_INFO disk, int num) {
     printf("%sErasing disk %d\n", YELLOW, num + 1);
     char diskPath[50];
-    snprintf(diskPath, sizeof(diskPath), "dev/disk%d", num);
+    snprintf(diskPath, sizeof(diskPath), "/dev/disk%d", num);
 
     for(int i = 0; i < 10; i++) {
-        if(i < 3) {
+        if(i < 10000) { //Just testing here
             overwriteDisk(diskPath, false);
         } else {
             overwriteDisk(diskPath, true);
@@ -87,6 +87,8 @@ void eraseDisk(struct DISK_INFO disk, int num) {
 }
 
 int main(int argc, char** argv) {
+    srand(time(NULL)); // Initialize random number generator
+
     DiskManager diskManager = {getDisks};
     struct DISK_INFO disks[MAX_DISKS];
     int numDisks;
