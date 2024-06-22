@@ -55,20 +55,20 @@ void printProgress(unsigned long long totalWritten, unsigned long long totalSize
 
     printf("\r[");
     for(int i = 0; i < PROGRESS_BAR_WIDTH; i++) {
-        if(i < barWidth) printf("%s", BGREEN);
-        else printf("%s", BRED);
+        if(i < barWidth) printf("%s ", GREENB);
+        else printf("%s ", REDB);
     }
 
-    printf("] %d%% - %.2f MB/s - %llu/%llu bytes\n", (int)(progress * 100), writeSpeed / MB, totalWritten, totalSize);
+    printf("%s] %d%% - %.2f MB/s - %llu/%llu bytes", TRANSPARENTB, (int)(progress * 100), writeSpeed / MB, totalWritten, totalSize);
 
     if (estimated >= 86400) {
-        printf("Estimated time remaining: %.2f days", estimated / 86400);
+        printf(" - Estimated time remaining: %.2f days", estimated / 86400);
     } else if (estimated >= 3600) {
-        printf("Estimated time remaining: %.2f hours", estimated / 3600);
+        printf(" - Estimated time remaining: %.2f hours", estimated / 3600);
     } else if (estimated >= 60) {
-        printf("Estimated time remaining: %.2f minutes", estimated / 60);
+        printf(" - Estimated time remaining: %.2f minutes", estimated / 60);
     } else {
-        printf("Estimated time remaining: %.2f seconds", estimated);
+        printf(" - Estimated time remaining: %.2f seconds", estimated);
     }
 
     fflush(stdout);
