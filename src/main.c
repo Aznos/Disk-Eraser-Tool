@@ -50,7 +50,7 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
 }
 
 void overwriteDisk(const char* diskPath, const char* pattern) {
-    printf("%sTest\n", RED);
+    printf("%sOverwriting disk with pattern: %s%s\n", YELLOW, BCYAN, pattern);
 }
 
 void eraseDisk(struct DISK_INFO disk, int num) {
