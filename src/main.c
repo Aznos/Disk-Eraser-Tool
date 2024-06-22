@@ -82,7 +82,11 @@ void overwriteDisk(const char* diskPath, bool random, unsigned long long size) {
 
         time_t currentTime = time(NULL);
         if(difftime(currentTime, lastPrinttime) >= 5.0) {
-            printf("%sProgress: %llu/%llu bytes (%.2f%%)\n", YELLOW, totalWritten, totalWritten + size, (double)totalWritten / (double)(totalWritten + size) * 100);
+            double elapsedTime = difftime(currentTime, startTime);
+            double writeSpeed = totalWritten / elapsedTime; //BPS
+            unsigned long long bytesLeft = totalWritten + size;
+            double estimated = bytesLeft / writeSpeed;
+            printf("%s%llu/%llu bytes written (%.2f%%)\nEstimated time reamining: %.2f seconds", YELLOW, totalWritten, totalWritten + size, (double)totalWritten / (double)(totalWritten + size) * 100, estimated);
             lastPrinttime = currentTime;
         }
     }
