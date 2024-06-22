@@ -86,7 +86,20 @@ void overwriteDisk(const char* diskPath, bool random, unsigned long long size) {
             double writeSpeed = totalWritten / elapsedTime; //BPS
             unsigned long long bytesLeft = totalWritten + size;
             double estimated = bytesLeft / writeSpeed;
-            printf("%s%llu/%llu bytes written (%.2f%%)\nEstimated time reamining: %.2f seconds", YELLOW, totalWritten, totalWritten + size, (double)totalWritten / (double)(totalWritten + size) * 100, estimated);
+
+            if(estimated >= 86400) {
+                estimated /= 86400;
+                printf("%s%llu/%llu bytes written (%.2f%%)\nEstimated time reamining: %.2f days\n", YELLOW, totalWritten, totalWritten + size, (double)totalWritten / (double)(totalWritten + size) * 100, estimated);
+            } else if(estimated >= 3600) {
+                estimated /= 3600;
+                printf("%s%llu/%llu bytes written (%.2f%%)\nEstimated time reamining: %.2f hours\n", YELLOW, totalWritten, totalWritten + size, (double)totalWritten / (double)(totalWritten + size) * 100, estimated);
+            } else if(estimated >= 60) {
+                estimated /= 60;
+                printf("%s%llu/%llu bytes written (%.2f%%)\nEstimated time reamining: %.2f minutes\n", YELLOW, totalWritten, totalWritten + size, (double)totalWritten / (double)(totalWritten + size) * 100, estimated);
+            } else {
+                printf("%s%llu/%llu bytes written (%.2f%%)\nEstimated time reamining: %.2f seconds\n", YELLOW, totalWritten, totalWritten + size, (double)totalWritten / (double)(totalWritten + size) * 100, estimated);
+            }
+
             lastPrinttime = currentTime;
         }
     }
