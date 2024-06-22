@@ -10,7 +10,7 @@
 
 void getDisks(struct DISK_INFO disks[], int* numDisks) {
     int diskCount = 0;
-    char command[50];
+    char command[100];
     char path[1035];
     FILE *fp;
 
@@ -26,15 +26,15 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
             if (strstr(path, "GB") != NULL) {
                 float sizeGB;
                 sscanf(path, "   Disk Size: %f GB", &sizeGB);
-                disks[diskCount].size = (unsigned int)(sizeGB * 1024); // Convert GB to MB
+                disks[diskCount].size = (unsigned long long)(sizeGB * 1024 * 1024 * 1024); // Convert GB to bytes
             } else if (strstr(path, "TB") != NULL) {
                 float sizeTB;
                 sscanf(path, "   Disk Size: %f TB", &sizeTB);
-                disks[diskCount].size = (unsigned int)(sizeTB * 1024 * 1024); // Convert TB to MB
+                disks[diskCount].size = (unsigned long long)(sizeTB * 1024 * 1024 * 1024 * 1024); // Convert TB to bytes
             } else if (strstr(path, "MB") != NULL) {
                 float sizeMB;
                 sscanf(path, "   Disk Size: %f MB", &sizeMB);
-                disks[diskCount].size = (unsigned int)sizeMB;
+                disks[diskCount].size = (unsigned long long)(sizeMB * 1024 * 1024); // Convert MB to bytes
             } else {
                 disks[diskCount].size = 0; // If size is not found or recognized
             }
@@ -50,7 +50,7 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
     *numDisks = diskCount;
 }
 
-void overwriteDisk(const char* diskPath, bool random, long long size) {
+void overwriteDisk(const char* diskPath, bool random, unsigned long long size) {
     int disk = open(diskPath, O_WRONLY);
     if(disk < 0) {
         printf("%sFailed to open disk %s\n", RED, diskPath);
@@ -68,26 +68,28 @@ void overwriteDisk(const char* diskPath, bool random, long long size) {
             memset(buffer, '0', sizeof(buffer));
         }
 
-        if(write(disk, buffer, sizeof(buffer)) < 0) {
+        ssize_t written = write(disk, buffer, sizeof(buffer));
+        if(written < 0) {
             printf("%sFailed to write to disk %s\n", RED, diskPath);
+            break;
         }
 
-        size -= sizeof(buffer);
+        size -= written;
     }
     
     close(disk);
 }
 
-void eraseDisk(struct DISK_INFO disk, int num, long long size) {
+void eraseDisk(struct DISK_INFO disk, int num) {
     printf("%sErasing disk %d\n", YELLOW, num + 1);
     char diskPath[50];
     snprintf(diskPath, sizeof(diskPath), "/dev/disk%d", num);
 
     for(int i = 0; i < 10; i++) {
-        if(i < 3) {
-            overwriteDisk(diskPath, false, size);
+        if(i < 5) {
+            overwriteDisk(diskPath, false, disk.size);
         } else {
-            overwriteDisk(diskPath, true, size);
+            overwriteDisk(diskPath, true, disk.size);
         }
 
         printf("%sPass %d complete\n", YELLOW, i + 1);
@@ -96,7 +98,7 @@ void eraseDisk(struct DISK_INFO disk, int num, long long size) {
 }
 
 int main(int argc, char** argv) {
-    srand(time(NULL)); // Initialize random number generator
+    srand(time(NULL));
 
     DiskManager diskManager = {getDisks};
     struct DISK_INFO disks[MAX_DISKS];
@@ -121,12 +123,14 @@ int main(int argc, char** argv) {
         if(strcmp(input, "I am sure") == 0) {
             printf("%sWhich disk do you want to wipe (Or type \"all\" to wipe all disks):\n", YELLOW);
             for(int i = 0; i < numDisks; i++) {
-                if(disks[i].size >= 1024 * 1024) {
-                    printf("%sDisk Number: %s%d\n%sDisk Size: %s%u TB\n\n", CYAN, BCYAN, i + 1, CYAN, BCYAN, disks[i].size / (1024 * 1024));
-                } else if(disks[i].size >= 1024) {
-                    printf("%sDisk Number: %s%d\n%sDisk Size: %s%u GB\n\n", CYAN, BCYAN, i + 1, CYAN, BCYAN, disks[i].size / 1024);
+                if(disks[i].size >= TB) {
+                    printf("%sDisk Number: %s%d\n%sDisk Size: %s%llu TB\n\n", CYAN, BCYAN, i + 1, CYAN, BCYAN, disks[i].size / TB);
+                } else if(disks[i].size >= GB) {
+                    printf("%sDisk Number: %s%d\n%sDisk Size: %s%llu GB\n\n", CYAN, BCYAN, i + 1, CYAN, BCYAN, disks[i].size / GB);
+                } else if(disks[i].size >= MB) {
+                    printf("%sDisk Number: %s%d\n%sDisk Size: %s%llu MB\n\n", CYAN, BCYAN, i + 1, CYAN, BCYAN, disks[i].size / MB);
                 } else {
-                    printf("%sDisk Number: %s%d\n%sDisk Size: %s%u MB\n\n", CYAN, BCYAN, i + 1, CYAN, BCYAN, disks[i].size);
+                    printf("%sDisk Number: %s%d\n%sDisk Size: %s%llu KB\n\n", CYAN, BCYAN, i + 1, CYAN, BCYAN, disks[i].size / KB);
                 }
             }
 
@@ -141,7 +145,7 @@ int main(int argc, char** argv) {
 
                 if(strcmp(input, "yes") == 0) {
                     for(int i = 0; i < numDisks; i++) {
-                        eraseDisk(disks[i], i, disks[i].size);
+                        eraseDisk(disks[i], i);
                     }
                 } else {
                     printf("%s\nQuitting program..\n", YELLOW);
@@ -154,7 +158,7 @@ int main(int argc, char** argv) {
                     input[strcspn(input, "\n")] = 0;
 
                     if(strcmp(input, "yes") == 0) {
-                        eraseDisk(disks[diskNum - 1], diskNum - 1, disks[diskNum - 1].size);
+                        eraseDisk(disks[diskNum - 1], diskNum - 1);
                     } else {
                         printf("%s\nQuitting program..\n", YELLOW);
                     }

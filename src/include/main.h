@@ -2,9 +2,13 @@
 #define MAIN_H
 
 #define MAX_DISKS 16
+#define KB (1024ULL)
+#define MB (1024 * KB)
+#define GB (1024 * MB)
+#define TB (1024 * GB)
 
 struct DISK_INFO {
-    unsigned int size;
+    unsigned long long size;
 };
 
 typedef struct {
