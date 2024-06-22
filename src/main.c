@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <fcntl.h>
 #include <stdbool.h>
 #include <time.h>
 #include <unistd.h>
@@ -50,13 +51,13 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
 }
 
 void overwriteDisk(const char* diskPath, bool random) {
-    FILE *disk = fopen(diskPath, "wb");
-    if(disk == NULL) {
+    int disk = open(diskPath, O_WRONLY);
+    if(disk < 0) {
         printf("%sFailed to open disk %s\n", RED, diskPath);
         return;
     }
 
-    unsigned char buffer[1024]; //1KB Buffer
+    unsigned char buffer[1024];
     if(random) {
         for(unsigned int i = 0; i < sizeof(buffer); i++) {
             buffer[i] = "0123456789ABCDEF"[rand() % 16];
@@ -65,8 +66,10 @@ void overwriteDisk(const char* diskPath, bool random) {
         memset(buffer, '0', sizeof(buffer));
     }
 
-    fwrite(buffer, 1, sizeof(buffer), disk);
-    fclose(disk);
+    if(write(disk, buffer, sizeof(buffer)) < 0) {
+        printf("%sFailed to write to disk %s\n", RED, diskPath);
+    }
+    close(disk);
 }
 
 void eraseDisk(struct DISK_INFO disk, int num) {
