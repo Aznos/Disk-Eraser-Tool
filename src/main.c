@@ -107,12 +107,12 @@ void overwriteDisk(const char* diskPath, bool random, unsigned long long size) {
     close(disk);
 }
 
-void eraseDisk(struct DISK_INFO disk, int num) {
+void eraseDisk(struct DISK_INFO disk, int num, int passes) {
     printf("%sErasing disk %d\n", YELLOW, num + 1);
     char diskPath[50];
     snprintf(diskPath, sizeof(diskPath), "/dev/disk%d", num);
 
-    for(int i = 0; i < 5; i++) {
+    for(int i = 0; i < passes; i++) {
         if(i < 1) {
             overwriteDisk(diskPath, false, disk.size);
         } else {
@@ -171,8 +171,17 @@ int main(int argc, char** argv) {
                 input[strcspn(input, "\n")] = 0;
 
                 if(strcmp(input, "yes") == 0) {
+                    printf("%sHow many passes do you want to make? (Default is 5, minimum is 2)\n%s> ", YELLOW, WHITE);
+                    fgets(input, sizeof(input), stdin);
+                    input[strcspn(input, "\n")] = 0;
+
+                    int passes = atoi(input);
+                    if(passes <= 0) {
+                        passes = 5;
+                    }
+
                     for(int i = 0; i < numDisks; i++) {
-                        eraseDisk(disks[i], i);
+                        eraseDisk(disks[i], i, passes);
                     }
                 } else {
                     printf("%s\nQuitting program..\n", YELLOW);
@@ -185,7 +194,16 @@ int main(int argc, char** argv) {
                     input[strcspn(input, "\n")] = 0;
 
                     if(strcmp(input, "yes") == 0) {
-                        eraseDisk(disks[diskNum - 1], diskNum - 1);
+                        printf("%sHow many passes do you want to make? (Default is 5, minimum is 2)\n%s> ", YELLOW, WHITE);
+                        fgets(input, sizeof(input), stdin);
+                        input[strcspn(input, "\n")] = 0;
+
+                        int passes = atoi(input);
+                        if(passes <= 0) {
+                            passes = 5;
+                        }
+
+                        eraseDisk(disks[diskNum - 1], diskNum - 1, passes);
                     } else {
                         printf("%s\nQuitting program..\n", YELLOW);
                     }
