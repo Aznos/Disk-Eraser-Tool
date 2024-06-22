@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Wall -g
 SRCS = $(wildcard src/*.c)
 INCLUDES = -Iinclude
-TARGET = bin/main
+TARGET = bin/det
 DISK = /dev/disk4
 
 all:
