@@ -50,7 +50,7 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
     *numDisks = diskCount;
 }
 
-void overwriteDisk(const char* diskPath, bool random) {
+void overwriteDisk(const char* diskPath, bool random, long long size) {
     int disk = open(diskPath, O_WRONLY);
     if(disk < 0) {
         printf("%sFailed to open disk %s\n", RED, diskPath);
@@ -58,30 +58,36 @@ void overwriteDisk(const char* diskPath, bool random) {
     }
 
     unsigned char buffer[1024];
-    if(random) {
-        for(unsigned int i = 0; i < sizeof(buffer); i++) {
-            buffer[i] = "0123456789ABCDEF"[rand() % 16];
-        }
-    } else {
-        memset(buffer, '0', sizeof(buffer));
-    }
 
-    if(write(disk, buffer, sizeof(buffer)) < 0) {
-        printf("%sFailed to write to disk %s\n", RED, diskPath);
+    while(size > 0) {
+        if(random) {
+            for(unsigned int i = 0; i < sizeof(buffer); i++) {
+                buffer[i] = "0123456789ABCDEF"[rand() % 16];
+            }
+        } else {
+            memset(buffer, '0', sizeof(buffer));
+        }
+
+        if(write(disk, buffer, sizeof(buffer)) < 0) {
+            printf("%sFailed to write to disk %s\n", RED, diskPath);
+        }
+
+        size -= sizeof(buffer);
     }
+    
     close(disk);
 }
 
-void eraseDisk(struct DISK_INFO disk, int num) {
+void eraseDisk(struct DISK_INFO disk, int num, long long size) {
     printf("%sErasing disk %d\n", YELLOW, num + 1);
     char diskPath[50];
     snprintf(diskPath, sizeof(diskPath), "/dev/disk%d", num);
 
     for(int i = 0; i < 10; i++) {
         if(i < 3) {
-            overwriteDisk(diskPath, false);
+            overwriteDisk(diskPath, false, size);
         } else {
-            overwriteDisk(diskPath, true);
+            overwriteDisk(diskPath, true, size);
         }
 
         printf("%sPass %d complete\n", YELLOW, i + 1);
@@ -135,7 +141,7 @@ int main(int argc, char** argv) {
 
                 if(strcmp(input, "yes") == 0) {
                     for(int i = 0; i < numDisks; i++) {
-                        eraseDisk(disks[i], i);
+                        eraseDisk(disks[i], i, disks[i].size);
                     }
                 } else {
                     printf("%s\nQuitting program..\n", YELLOW);
@@ -148,7 +154,7 @@ int main(int argc, char** argv) {
                     input[strcspn(input, "\n")] = 0;
 
                     if(strcmp(input, "yes") == 0) {
-                        eraseDisk(disks[diskNum - 1], diskNum - 1);
+                        eraseDisk(disks[diskNum - 1], diskNum - 1, disks[diskNum - 1].size);
                     } else {
                         printf("%s\nQuitting program..\n", YELLOW);
                     }
