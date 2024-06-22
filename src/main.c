@@ -58,6 +58,9 @@ void overwriteDisk(const char* diskPath, bool random, unsigned long long size) {
     }
 
     unsigned char buffer[1024];
+    unsigned long long totalWritten = 0;
+    time_t startTime = time(NULL);
+    time_t lastPrinttime = startTime;
 
     while(size > 0) {
         if(random) {
@@ -74,7 +77,14 @@ void overwriteDisk(const char* diskPath, bool random, unsigned long long size) {
             break;
         }
 
+        totalWritten += written;
         size -= written;
+
+        time_t currentTime = time(NULL);
+        if(difftime(currentTime, lastPrinttime) >= 5.0) {
+            printf("%sProgress: %llu/%llu bytes (%.2f%%)\n", YELLOW, totalWritten, totalWritten + size, (double)totalWritten / (double)(totalWritten + size) * 100);
+            lastPrinttime = currentTime;
+        }
     }
     
     close(disk);
@@ -115,7 +125,7 @@ int main(int argc, char** argv) {
     input[strcspn(input, "\n")] = 0;
 
     if(strcmp(input, "I understand") == 0) {
-        printf("%s%s!!! WARNING !!!\n", RED, REDB);
+        printf("%s%s!!! WARNING !!!\n", BBLACK, REDB);
         printf("%sAre you sure you want to proceed? This action is %sIRREVERSIBLE%s\nIf you are sure you want to proceed, type \"I am sure\" and press Enter\n\n%s> ", TRANSPARENTB, BHRED, RED, WHITE);
 
         fgets(input, sizeof(input), stdin);
