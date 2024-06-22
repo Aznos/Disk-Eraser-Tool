@@ -49,8 +49,24 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
     *numDisks = diskCount;
 }
 
-void overwriteDisk(const char* diskPath, const char* pattern) {
-    printf("%sOverwriting disk with pattern: %s%s\n", YELLOW, BCYAN, pattern);
+void overwriteDisk(const char* diskPath, bool random) {
+    FILE *disk = fopen(diskPath, "wb");
+    if(disk == NULL) {
+        printf("%sFailed to open disk %s", RED, diskPath);
+        return;
+    }
+
+    unsigned char buffer[1024]; //1KB Buffer
+    if(random) {
+        for(unsigned int i = 0; i < sizeof(buffer); i++) {
+            buffer[i] = "0123456789ABCDEF"[rand() % 16];
+        }
+    } else {
+        memset(buffer, '0', sizeof(buffer));
+    }
+
+    fwrite(buffer, 1, sizeof(buffer), disk);
+    fclose(disk);
 }
 
 void eraseDisk(struct DISK_INFO disk, int num) {
@@ -60,14 +76,9 @@ void eraseDisk(struct DISK_INFO disk, int num) {
 
     for(int i = 0; i < 10; i++) {
         if(i < 3) {
-            overwriteDisk(diskPath, "0");
-        } else { //Random data 0-9 A-F
-            char pattern[17];
-            for(int j = 0; j < 16; j++) {
-                pattern[j] = "0123456789ABCDEF"[rand() % 16];
-            }
-            pattern[16] = '\0';
-            overwriteDisk(diskPath, pattern);
+            overwriteDisk(diskPath, false);
+        } else {
+            overwriteDisk(diskPath, true);
         }
 
         printf("%sPass %d complete\n", YELLOW, i + 1);
