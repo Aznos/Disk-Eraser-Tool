@@ -6,8 +6,6 @@ The simple safe and secure disk eraser tool for OSX.
 - Securely erase your disk, making it impossible to recover data
 - Erase multiple disks at once, saving time
 - Simple and easy to use
-<br>
-<br>
 
 # Installation
 <h3>Normal Installation</h3>
