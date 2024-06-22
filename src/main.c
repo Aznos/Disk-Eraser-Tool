@@ -113,7 +113,7 @@ void eraseDisk(struct DISK_INFO disk, int num) {
     snprintf(diskPath, sizeof(diskPath), "/dev/disk%d", num);
 
     for(int i = 0; i < 10; i++) {
-        if(i < 5) {
+        if(i < 1) {
             overwriteDisk(diskPath, false, disk.size);
         } else {
             overwriteDisk(diskPath, true, disk.size);
