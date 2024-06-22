@@ -1,36 +1,44 @@
 # Disk-Eraser-Tool
 
-The simple safe and secure disk eraser tool for OSX.
+A simple, safe, and secure disk eraser tool for macOS.
 
 ## Features
 - Securely erase your disk, making it impossible to recover data
 - Erase multiple disks at once, saving time
 - Simple and easy to use
 
-# Installation
-<h3>Normal Installation</h3>
-<ol>
-  <li>Download the latest release from the [Releases page](https://github.com/Aznos/Disk-Eraser-Tool/releases)</li>
-  <li>Make sure the disk(s) you want to erase are unmounted from the system, this can be done with diskutil unmountDisk /dev/diskX</li>
-  <li>Run sudo det.exe in the terminal</li>
-  <li>Confirm the disk you'd like to erase, and begone with your data!</li>
-</ol>
-<h3>Compile from source</h3>
-<ol>
-    <li>Clone the repo with git clone https://github.com/Aznos/Disk-Eraser-Tool/</li>
-    <li>Run make in the root directory of the project</li>
-    <li>Optionally run make run to automatically unmount the disk(s) and run the program</li>
-    <li>Otherwise, unmount the disk(s) and run sudo bin/det</li>
-</ol>
+## Installation
 
-# Usage
-- Run the program with sudo det.exe
-- Select the disk(s) you'd like to erase
-- Confirm the disk(s) you'd like to erase
-- Wait for the program to finish (this may take a while depending on the size of the disk)
+### Normal Installation
+1. Download the latest release from the [Releases page](https://github.com/Aznos/Disk-Eraser-Tool/releases).
+2. Make sure the disk(s) you want to erase are unmounted from the system. This can be done with:
+   ```diskutil unmountDisk /dev/diskX```
+3. Run the program:
+   ```sudo ./det.exe```
+4. Confirm the disk you'd like to erase and proceed with erasing your data!
 
-# License
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/Aznos/Disk-Eraser-Tool/blob/main/LICENSE)
+### Compile from Source
+1. Clone the repository:
+   ```git clone https://github.com/Aznos/Disk-Eraser-Tool/```
+2. Navigate to the root directory of the project:
+   ```cd Disk-Eraser-Tool```
+3. Compile the project:
+   ```make```
+4. Optionally, you can run:
+   ```make run```
+   This will automatically unmount the disk(s) and run the program.
+5. Otherwise, unmount the disk(s) manually and run:
+   ```sudo bin/det```
 
-# Disclaimer
-This project was made as a hobby project, and this is not intended for professional use. This project was made for educational purposes only, and I am not responsible for any data loss or damage caused by this program. Use at your own risk.
+## Usage
+1. Run the program:
+   ```sudo ./det.exe```
+2. Select the disk(s) you'd like to erase.
+3. Confirm your selection.
+4. Wait for the program to finish (this may take a while depending on the size of the disk).
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/Aznos/Disk-Eraser-Tool/blob/main/LICENSE) file for details.
+
+## Disclaimer
+This project was made as a hobby project and is not intended for professional use. It was created for educational purposes only, and I am not responsible for any data loss or damage caused by this program. Use at your own risk.
