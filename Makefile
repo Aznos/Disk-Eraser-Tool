@@ -1,13 +1,13 @@
 CC = gcc
 CFLAGS = -Wall -g
 SRCS = $(wildcard src/*.c)
-INCLUDES = -Iinclude
-LIBS = -Llib -lSDL2
+INCLUDES = -Iinclude -I/opt/homebrew/include/SDL2 -D_THREAD_SAFE
+LIBS = -L/opt/homebrew/lib -lSDL2
 TARGET = bin/det
 DISK = /dev/disk4
 
 all:
-	$(CC) $(SRCS) $(CFLAGS) $(INCLUDES) -o $(TARGET)
+	$(CC) $(SRCS) $(CFLAGS) $(INCLUDES) $(LIBS) -o $(TARGET)
 
 run:
 	sudo diskutil unmountDisk $(DISK)
