@@ -23,14 +23,23 @@ void initGUI() {
     SDL_Event event;
     int running = 1;
     while(running) {
+        unsigned int frameStart = SDL_GetTicks();
         while(SDL_PollEvent(&event)) {
             if(event.type == SDL_QUIT) {
                 running = 0;
             }
         }
 
+        SDL_SetRenderDrawColor(renderer, 50, 54, 55, 255);
+        SDL_RenderClear(renderer);
+
         drawDiskRect(renderer, 200, 150, 600, 300, rectColor);
         SDL_RenderPresent(renderer);
+
+        unsigned int frameTime = SDL_GetTicks() - frameStart;
+        if(frameTime < FRAME_DELAY) {
+            SDL_Delay(FRAME_DELAY - frameTime);
+        }
     }
 
     SDL_DestroyRenderer(renderer);
