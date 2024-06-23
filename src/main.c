@@ -1,54 +1,11 @@
 #include "include/colors.h"
 #include "include/main.h"
 #include "include/disk.h"
+#include "include/util.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
-
-void getDisks(struct DISK_INFO disks[], int* numDisks) {
-    int diskCount = 0;
-    char command[100];
-    char path[1035];
-    FILE *fp;
-
-    for(int i = 0; i < MAX_DISKS; i++) {
-        snprintf(command, sizeof(command), "diskutil info /dev/disk%d | grep 'Disk Size'", i);
-        fp = popen(command, "r");
-        if(fp == NULL) {
-            printf("%sFailed to run, make sure you're running on OSX\n", RED);
-            exit(1);
-        }
-
-        if (fgets(path, sizeof(path) - 1, fp) != NULL) {
-            if (strstr(path, "GB") != NULL) {
-                float sizeGB;
-                sscanf(path, "   Disk Size: %f GB", &sizeGB);
-                disks[diskCount].size = (unsigned long long)(sizeGB * 1024 * 1024 * 1024); // Convert GB to bytes
-            } else if (strstr(path, "TB") != NULL) {
-                float sizeTB;
-                sscanf(path, "   Disk Size: %f TB", &sizeTB);
-                disks[diskCount].size = (unsigned long long)(sizeTB * 1024 * 1024 * 1024 * 1024); // Convert TB to bytes
-            } else if (strstr(path, "MB") != NULL) {
-                float sizeMB;
-                sscanf(path, "   Disk Size: %f MB", &sizeMB);
-                disks[diskCount].size = (unsigned long long)(sizeMB * 1024 * 1024); // Convert MB to bytes
-            } else {
-                disks[diskCount].size = 0; // If size is not found or recognized
-            }
-
-            diskCount++;
-        } else {
-            break; // No more disks found
-        }
-
-        pclose(fp);
-    }
-
-    *numDisks = diskCount;
-}
-
-
 
 int main(int argc, char** argv) {
     srand(time(NULL));
