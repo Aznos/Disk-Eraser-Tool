@@ -1,4 +1,5 @@
 #include "include/gui.h"
+#include "include/util.h"
 #include <stdio.h>
 
 const int SCREENW = 1000;
@@ -18,7 +19,7 @@ void initGUI() {
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
 
-    SDL_Color rectColor = {255, 0, 0, 255};
+    SDL_Color rectColor = {255, 255, 255, 255};
 
     SDL_Event event;
     int running = 1;
@@ -33,7 +34,10 @@ void initGUI() {
         SDL_SetRenderDrawColor(renderer, 50, 54, 55, 255);
         SDL_RenderClear(renderer);
 
-        drawDiskRect(renderer, 200, 150, 600, 300, rectColor);
+        for(int i = 0; i < numDisks; i++) {
+            drawDiskRect(renderer, 200, 150 + i * 100, 600, 50, rectColor);
+        }
+
         SDL_RenderPresent(renderer);
 
         unsigned int frameTime = SDL_GetTicks() - frameStart;

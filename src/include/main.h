@@ -7,6 +7,8 @@
 #define GB (1024 * MB)
 #define TB (1024 * GB)
 
+int numDisks;
+
 struct DISK_INFO {
     unsigned long long size;
 };

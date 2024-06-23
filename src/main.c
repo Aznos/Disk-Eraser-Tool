@@ -13,7 +13,6 @@ int main(int argc, char** argv) {
 
     DiskManager diskManager = {getDisks};
     struct DISK_INFO disks[MAX_DISKS];
-    int numDisks;
 
     diskManager.getDisks(disks, &numDisks);
 
