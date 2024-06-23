@@ -1,13 +1,12 @@
 #include "include/gui.h"
-#include "include/SDL2/SDL.h"
 #include <stdio.h>
 
 const int SCREENW = 1000;
 const int SCREENH = 600;
 
-void drawDiskRect(SDL_Renderer* renderer, int x, int y, int w, int h) {
+void drawDiskRect(SDL_Renderer* renderer, int x, int y, int w, int h, SDL_Color color) {
     SDL_Rect rect = {x, y, w, h};
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     SDL_RenderFillRect(renderer, &rect);
 }
 
@@ -19,6 +18,8 @@ void initGUI() {
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
 
+    SDL_Color rectColor = {255, 0, 0, 255};
+
     SDL_Event event;
     int running = 1;
     while(running) {
@@ -28,7 +29,7 @@ void initGUI() {
             }
         }
 
-        drawDiskRect(renderer, 100, 100, 100, 100);
+        drawDiskRect(renderer, 200, 150, 600, 300, rectColor);
         SDL_RenderPresent(renderer);
     }
 
