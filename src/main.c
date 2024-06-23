@@ -2,6 +2,7 @@
 #include "include/main.h"
 #include "include/disk.h"
 #include "include/util.h"
+#include "include/gui.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -15,6 +16,11 @@ int main(int argc, char** argv) {
     int numDisks;
 
     diskManager.getDisks(disks, &numDisks);
+
+    if(argc > 1 && strcmp(argv[1], "gui") == 0) {
+        initGUI();
+        return 0;
+    }
     
     printf(CLEAR_TERMINAL);
     printf("%s%s!!! WARNING !!!\n", BBLACK, REDB);
