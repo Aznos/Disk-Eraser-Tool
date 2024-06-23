@@ -11,6 +11,24 @@ void drawDiskRect(SDL_Renderer* renderer, int x, int y, int w, int h, SDL_Color 
     SDL_RenderFillRect(renderer, &rect);
 }
 
+void drawGrid(SDL_Renderer* renderer, int numDisks, int rows, int cols, int rectW, int rectH, SDL_Color color) {
+    int gridWidth = cols * rectW + (cols - 1) * (rectW / 4);
+    int gridHeight = rows * rectH + (rows - 1) * (rectH / 4);
+
+    int startX = (SCREENW - gridWidth) / 2;
+    int startY = (SCREENH - gridHeight) / 2;
+
+    for(int i = 0; i < numDisks; i++) {
+        int row = i / cols;
+        int col = i % cols;
+
+        int x = startX + col * (rectW + rectW / 4);
+        int y = startY + row * (rectH + rectH / 4);
+
+        drawDiskRect(renderer, x, y, rectW, rectH, color);
+    }
+}
+
 void initGUI() {
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window* window = SDL_CreateWindow("Disk Erase Tool", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREENW, SCREENH, SDL_WINDOW_SHOWN);
@@ -23,6 +41,10 @@ void initGUI() {
 
     SDL_Event event;
     int running = 1;
+    int rows = 2;
+    int cols = (numDisks + rows - 1) / rows;
+    int rectW = 150;
+    int rectH = 150;
     while(running) {
         unsigned int frameStart = SDL_GetTicks();
         while(SDL_PollEvent(&event)) {
@@ -34,9 +56,7 @@ void initGUI() {
         SDL_SetRenderDrawColor(renderer, 50, 54, 55, 255);
         SDL_RenderClear(renderer);
 
-        for(int i = 0; i < numDisks; i++) {
-            drawDiskRect(renderer, 15 + i * 200, 15, 150, 150, rectColor);
-        }
+        drawGrid(renderer, numDisks, rows, cols, rectW, rectH, rectColor);
 
         SDL_RenderPresent(renderer);
 

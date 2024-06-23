@@ -8,5 +8,6 @@
 
 void initGUI();
 void drawDiskRect(SDL_Renderer* renderer, int x, int , int w, int h, SDL_Color color);
+void drawGrid(SDL_Renderer* renderer, int numDisks, int rows, int cols, int rectW, int rectH, SDL_Color color);
 
 #endif
