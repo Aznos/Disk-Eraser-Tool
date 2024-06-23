@@ -35,7 +35,7 @@ void initGUI() {
         SDL_RenderClear(renderer);
 
         for(int i = 0; i < numDisks; i++) {
-            drawDiskRect(renderer, 200, 150 + i * 100, 600, 50, rectColor);
+            drawDiskRect(renderer, 15 + i * 200, 15, 150, 150, rectColor);
         }
 
         SDL_RenderPresent(renderer);
