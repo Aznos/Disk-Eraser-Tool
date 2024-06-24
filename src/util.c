@@ -11,7 +11,8 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
     char path[1035];
     FILE *fp;
 
-    for(diskCount; diskCount < MAX_DISKS; diskCount++) {
+    for(diskCount = 0; diskCount < MAX_DISKS; diskCount++) {
+        printf("aa");
         snprintf(command, sizeof(command), "diskutil info /dev/disk%d | grep 'Disk Size'", diskCount);
         fp = popen(command, "r");
         if(fp == NULL) {
