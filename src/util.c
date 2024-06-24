@@ -11,8 +11,8 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
     char path[1035];
     FILE *fp;
 
-    for(int i = 0; i < MAX_DISKS; i++) {
-        snprintf(command, sizeof(command), "diskutil info /dev/disk%d | grep 'Disk Size'", i);
+    for(diskCount; diskCount < MAX_DISKS; diskCount++) {
+        snprintf(command, sizeof(command), "diskutil info /dev/disk%d | grep 'Disk Size'", diskCount);
         fp = popen(command, "r");
         if(fp == NULL) {
             printf("%sFailed to run, make sure you're running on OSX\n", RED);
@@ -20,6 +20,10 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
         }
 
         if (fgets(path, sizeof(path) - 1, fp) != NULL) {
+            if (pclose(fp) != 0) {
+                break;
+            }
+            
             if (strstr(path, "GB") != NULL) {
                 float sizeGB;
                 sscanf(path, "   Disk Size: %f GB", &sizeGB);
@@ -35,13 +39,10 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
             } else {
                 disks[diskCount].size = 0; // If size is not found or recognized
             }
-
-            diskCount++;
         } else {
+            pclose(fp);
             break; // No more disks found
         }
-
-        pclose(fp);
     }
 
     *numDisks = diskCount;
