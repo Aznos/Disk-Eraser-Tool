@@ -13,8 +13,10 @@ A simple, safe, and secure disk eraser tool for macOS.
 1. Download the latest release from the [Releases page](https://github.com/Aznos/Disk-Eraser-Tool/releases).
 2. Make sure the disk(s) you want to erase are unmounted from the system. This can be done with:
    ```diskutil unmountDisk /dev/diskX```
-3. Run the program:
+3. Run the program (CLI):
    ```sudo ./det.exe```
+   Run the program (GUI):
+   ```sudo ./det.exe gui```
 4. Confirm the disk you'd like to erase and proceed with erasing your data!
 
 ### Compile from Source
@@ -25,15 +27,21 @@ A simple, safe, and secure disk eraser tool for macOS.
 3. Compile the project:
    ```make```
 4. Optionally, you can:
-   Edit the disk name in the Makefile to automatically unmount the disk
+   Edit the disk name in the Makefile to automatically unmount the disk (CLI)
    ```make run```
+   GUI:
+   ```make rungui
    This will automatically unmount the disk(s) and run the program.
-5. Otherwise, unmount the disk(s) manually and run:
+5. Otherwise, unmount the disk(s) manually and run (CLI):
    ```sudo bin/det```
+   Run the program (GUI):
+   ```sudo bin/det gui```
 
 ## Usage
-1. Run the program:
+1. Run the program (CLI):
    ```sudo ./det.exe```
+   Run the program (GUI):
+   ```sudo ./det.exe gui```
 2. Select the disk(s) you'd like to erase.
 3. Confirm your selection.
 4. Wait for the program to finish (this may take a while depending on the size of the disk).
