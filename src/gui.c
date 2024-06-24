@@ -48,8 +48,10 @@ void initGUI() {
     while(running) {
         unsigned int frameStart = SDL_GetTicks();
         while(SDL_PollEvent(&event)) {
-            if(event.type == SDL_QUIT) {
-                running = 0;
+            switch(event.type) {
+                case SDL_QUIT:
+                    running = 0;
+                    break;
             }
         }
 
