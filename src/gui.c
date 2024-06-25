@@ -118,7 +118,7 @@ void initGUI(int numDisks, struct DISK_INFO* disks) {
     SDL_RenderPresent(renderer);
 
     SDL_Color rectColor = {255, 255, 255, 255};
-    SDL_Color textColor = {255, 255, 255, 255}
+    SDL_Color textColor = {255, 255, 255, 255};
     SDL_Texture* texture = loadTexture(renderer, "./src/assets/img/hdd (Nikita Golubev).png");
     TTF_Font* font = TTF_OpenFont("./src/assets/fonts/Roboto-Regular.ttf", 24);
 
@@ -139,7 +139,7 @@ void initGUI(int numDisks, struct DISK_INFO* disks) {
         SDL_SetRenderDrawColor(renderer, 38, 41, 41, 255);
         SDL_RenderClear(renderer);
 
-        drawGrid(renderer, numDisks, rectW, rectH, rectColor, textColor texture, font, disks);
+        drawGrid(renderer, numDisks, rectW, rectH, rectColor, textColor, texture, font, disks);
 
         SDL_RenderPresent(renderer);
 
