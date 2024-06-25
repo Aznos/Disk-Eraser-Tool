@@ -1,6 +1,8 @@
 #include "include/gui.h"
 #include "include/util.h"
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 const int SCREENW = 1000;
 const int SCREENH = 600;
@@ -34,6 +36,20 @@ SDL_Texture* renderText(SDL_Renderer* renderer, TTF_Font* font, const char* text
     }
 
     return texture;
+}
+
+char formatSize(char* buffer, size_t size) {
+    if(size >= TB) {
+        snprintf(buffer, 35, "%.2f TB", (double)size / TB);
+    } else if(size >= GB) {
+        snprintf(buffer, 35, "%.2f GB", (double)size / GB);
+    } else if(size >= MB) {
+        snprintf(buffer, 35, "%.2f MB", (double)size / MB);
+    } else {
+        snprintf(buffer, 35, "%.2f KB", (double)size / KB);
+    }
+
+    return *buffer;
 }
 
 void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Color color, SDL_Texture* texture, TTF_Font* font) {
@@ -77,8 +93,11 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
             SDL_RenderCopy(renderer, texture, NULL, &dstRect);
         }
 
+        struct DISK_INFO disks[MAX_DISKS];
+
         char sizeLabel[20];
-        snprintf(sizeLabel, sizeof(sizeLabel), "Size: Placeholder");
+        char buffer[35];
+        snprintf(sizeLabel, sizeof(sizeLabel), "Size: %c", formatSize(buffer, disks[i].size));
         SDL_Texture* sizeTextTexture = renderText(renderer, font, sizeLabel, color);
         if(sizeTextTexture != NULL) {
             int textW, textH;
