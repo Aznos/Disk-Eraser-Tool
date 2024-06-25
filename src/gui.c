@@ -11,7 +11,14 @@ void drawDiskRect(SDL_Renderer* renderer, int x, int y, int w, int h, SDL_Color 
     SDL_RenderFillRect(renderer, &rect);
 }
 
-void drawGrid(SDL_Renderer* renderer, int numDisks, int rows, int cols, int rectW, int rectH, SDL_Color color) {
+void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Color color) {
+    if(numDisks > MAX_DISKS) {
+        numDisks = MAX_DISKS;
+    }
+
+    int cols = (numDisks > MAX_DISKS_PER_ROW) ? MAX_DISKS_PER_ROW : numDisks;
+    int rows = (numDisks + MAX_DISKS_PER_ROW - 1) / MAX_DISKS_PER_ROW;
+    
     int gridWidth = cols * rectW + (cols - 1) * (rectW / 4);
     int gridHeight = rows * rectH + (rows - 1) * (rectH / 4);
 
@@ -41,8 +48,6 @@ void initGUI() {
 
     SDL_Event event;
     int running = 1;
-    int rows = 2;
-    int cols = (numDisks + rows - 1) / rows;
     int rectW = 150;
     int rectH = 150;
     while(running) {
@@ -58,7 +63,7 @@ void initGUI() {
         SDL_SetRenderDrawColor(renderer, 50, 54, 55, 255);
         SDL_RenderClear(renderer);
 
-        drawGrid(renderer, numDisks, rows, cols, rectW, rectH, rectColor);
+        drawGrid(renderer, numDisks, rectW, rectH, rectColor);
 
         SDL_RenderPresent(renderer);
 
