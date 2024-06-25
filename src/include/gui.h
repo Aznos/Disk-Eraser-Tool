@@ -5,7 +5,7 @@
 #define FRAME_DELAY (1000 / FPS)
 #define MAX_DISKS_PER_ROW 4
 
-#include "SDL2/SDL.h"
+#include "SDL.h"
 
 void initGUI();
 void drawDiskRect(SDL_Renderer* renderer, int x, int , int w, int h, SDL_Color color);

@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Wall -g
 SRCS = $(wildcard src/*.c)
 INCLUDES = -Iinclude -I/opt/homebrew/include/SDL2 -D_THREAD_SAFE
-LIBS = -L/opt/homebrew/lib -lSDL2
+LIBS = -L/opt/homebrew/lib -lSDL2 -lSDL2_image -lSDL2_ttf
 TARGET = bin/det
 DISK = /dev/disk4
 
