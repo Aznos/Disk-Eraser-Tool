@@ -38,7 +38,7 @@ SDL_Texture* renderText(SDL_Renderer* renderer, TTF_Font* font, const char* text
     return texture;
 }
 
-char formatSize(char* buffer, size_t size) {
+char* formatSize(char* buffer, size_t size) {
     if(size >= TB) {
         snprintf(buffer, 35, "%.2f TB", (double)size / TB);
     } else if(size >= GB) {
@@ -49,7 +49,7 @@ char formatSize(char* buffer, size_t size) {
         snprintf(buffer, 35, "%.2f KB", (double)size / KB);
     }
 
-    return *buffer;
+    return buffer;
 }
 
 void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Color color, SDL_Texture* texture, TTF_Font* font) {
@@ -97,7 +97,7 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
 
         char sizeLabel[20];
         char buffer[35];
-        snprintf(sizeLabel, sizeof(sizeLabel), "Size: %c", formatSize(buffer, disks[i].size));
+        snprintf(sizeLabel, sizeof(sizeLabel), "Size: %s", formatSize(buffer, disks[i].size));
         SDL_Texture* sizeTextTexture = renderText(renderer, font, sizeLabel, color);
         if(sizeTextTexture != NULL) {
             int textW, textH;
