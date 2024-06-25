@@ -133,6 +133,26 @@ void initGUI(int numDisks, struct DISK_INFO* disks) {
                 case SDL_QUIT:
                     running = 0;
                     break;
+                case SDL_MOUSEBUTTONDOWN:
+                    if(event.button.button == SDL_BUTTON_LEFT) {
+                        int x = event.button.x;
+                        int y = event.button.y;
+                        for(int i = 0; i < numDisks; i++) {
+                            int row = i / MAX_DISKS_PER_ROW;
+                            int col = i % MAX_DISKS_PER_ROW;
+
+                            int startX = (SCREENW - MAX_DISKS_PER_ROW * rectW + (MAX_DISKS_PER_ROW - 1) * (rectW / 4)) / 2;
+                            int startY = (SCREENH - (numDisks / MAX_DISKS_PER_ROW) * rectH + ((numDisks / MAX_DISKS_PER_ROW) - 1) * (rectH / 4)) / 2;
+
+                            int diskX = startX + col * (rectW + rectW / 4);
+                            int diskY = startY + row * (rectH + rectH / 4);
+
+                            if(x >= diskX && x <= diskX + rectW && y >= diskY && y <= diskY + rectH) {
+                                printf("test\n");
+                            }
+                        }
+                    }
+                    break;
             }
         }
 
