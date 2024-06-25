@@ -7,47 +7,53 @@
 
 void getDisks(struct DISK_INFO disks[], int* numDisks) {
     int diskCount = 0;
-    char command[100];
+    char command[] = "diskutil list | grep '^/dev/disk[0-9]' | awk '{print $1}'";
     char path[1035];
     FILE *fp;
 
-    for(diskCount = 0; diskCount < MAX_DISKS; diskCount++) {
-        snprintf(command, sizeof(command), "diskutil info /dev/disk%d | grep 'Disk Size'", diskCount);
-        printf("Running command: %s\n", command);
+    fp = popen(command, "r");
+    if (fp == NULL) {
+        printf("%sFailed to run command\n", RED);
+        exit(1);
+    }
 
-        fp = popen(command, "r");
-        if(fp == NULL) {
-            printf("%sFailed to run, make sure you're running on OSX\n", RED);
+    while (fgets(path, sizeof(path) - 1, fp) != NULL) {
+        path[strcspn(path, "\n")] = 0;
+        char sizeCommand[100];
+        snprintf(sizeCommand, sizeof(sizeCommand), "diskutil info %s | grep 'Disk Size'", path);
+
+        FILE *sizeFp = popen(sizeCommand, "r");
+        if (sizeFp == NULL) {
+            printf("%sFailed to run command for size\n", RED);
             exit(1);
         }
 
-        if (fgets(path, sizeof(path) - 1, fp) != NULL) {
-            printf("Disk %d: %s", diskCount, path);
-            if (pclose(fp) != 0) {
-                break;
-            }
-            
-            if (strstr(path, "GB") != NULL) {
+        char sizePath[1035];
+        if (fgets(sizePath, sizeof(sizePath) - 1, sizeFp) != NULL) {
+
+            if (strstr(sizePath, "GB") != NULL) {
                 float sizeGB;
-                sscanf(path, "   Disk Size: %f GB", &sizeGB);
+                sscanf(sizePath, "   Disk Size: %f GB", &sizeGB);
                 disks[diskCount].size = (unsigned long long)(sizeGB * 1024 * 1024 * 1024); // Convert GB to bytes
-            } else if (strstr(path, "TB") != NULL) {
+            } else if (strstr(sizePath, "TB") != NULL) {
                 float sizeTB;
-                sscanf(path, "   Disk Size: %f TB", &sizeTB);
+                sscanf(sizePath, "   Disk Size: %f TB", &sizeTB);
                 disks[diskCount].size = (unsigned long long)(sizeTB * 1024 * 1024 * 1024 * 1024); // Convert TB to bytes
-            } else if (strstr(path, "MB") != NULL) {
+            } else if (strstr(sizePath, "MB") != NULL) {
                 float sizeMB;
-                sscanf(path, "   Disk Size: %f MB", &sizeMB);
+                sscanf(sizePath, "   Disk Size: %f MB", &sizeMB);
                 disks[diskCount].size = (unsigned long long)(sizeMB * 1024 * 1024); // Convert MB to bytes
             } else {
                 disks[diskCount].size = 0; // If size is not found or recognized
             }
-        } else {
-            pclose(fp);
-            break; // No more disks found
+
+            diskCount++;
         }
+
+        pclose(sizeFp);
     }
 
+    pclose(fp);
     *numDisks = diskCount;
 }
 
