@@ -62,7 +62,7 @@ void initGUI() {
     SDL_RenderPresent(renderer);
 
     SDL_Color rectColor = {255, 255, 255, 255};
-    SDL_Texture* texture = loadTexture(renderer, "../assets/img/hdd.png");
+    SDL_Texture* texture = loadTexture(renderer, "./src/assets/img/hdd.png");
 
     SDL_Event event;
     int running = 1;
