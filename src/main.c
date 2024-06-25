@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
     diskManager.getDisks(disks, &numDisks);
 
     if(argc > 1 && strcmp(argv[1], "gui") == 0) {
-        initGUI();
+        initGUI(numDisks, disks);
         return 0;
     }
     

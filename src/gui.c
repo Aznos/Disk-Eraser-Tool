@@ -52,7 +52,7 @@ char* formatSize(char* buffer, size_t size) {
     return buffer;
 }
 
-void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Color color, SDL_Texture* texture, TTF_Font* font) {
+void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Color color, SDL_Texture* texture, TTF_Font* font, struct DISK_INFO* disks) {
     if(numDisks > MAX_DISKS) {
         numDisks = MAX_DISKS;
     }
@@ -93,8 +93,6 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
             SDL_RenderCopy(renderer, texture, NULL, &dstRect);
         }
 
-        struct DISK_INFO disks[MAX_DISKS];
-
         char sizeLabel[20];
         char buffer[35];
         snprintf(sizeLabel, sizeof(sizeLabel), "Size: %s", formatSize(buffer, disks[i].size));
@@ -109,7 +107,7 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
     }
 }
 
-void initGUI() {
+void initGUI(int numDisks, struct DISK_INFO* disks) {
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
     TTF_Init();
@@ -140,7 +138,7 @@ void initGUI() {
         SDL_SetRenderDrawColor(renderer, 50, 54, 55, 255);
         SDL_RenderClear(renderer);
 
-        drawGrid(renderer, numDisks, rectW, rectH, rectColor, texture, font);
+        drawGrid(renderer, numDisks, rectW, rectH, rectColor, texture, font, disks);
 
         SDL_RenderPresent(renderer);
 
