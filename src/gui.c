@@ -52,7 +52,7 @@ char* formatSize(char* buffer, size_t size) {
     return buffer;
 }
 
-void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Color color, SDL_Texture* texture, TTF_Font* font, struct DISK_INFO* disks) {
+void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Color color, SDL_Color textcolor, SDL_Texture* texture, TTF_Font* font, struct DISK_INFO* disks) {
     if(numDisks > MAX_DISKS) {
         numDisks = MAX_DISKS;
     }
@@ -77,7 +77,7 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
 
         char label[20];
         snprintf(label, sizeof(label), "Disk %d", i + 1);
-        SDL_Texture* textTexture = renderText(renderer, font, label, color);
+        SDL_Texture* textTexture = renderText(renderer, font, label, textcolor);
         if(textTexture != NULL) {
             int textW, textH;
             SDL_QueryTexture(textTexture, NULL, NULL, &textW, &textH);
@@ -96,7 +96,7 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
         char sizeLabel[20];
         char buffer[35];
         snprintf(sizeLabel, sizeof(sizeLabel), "Size: %s", formatSize(buffer, disks[i].size));
-        SDL_Texture* sizeTextTexture = renderText(renderer, font, sizeLabel, color);
+        SDL_Texture* sizeTextTexture = renderText(renderer, font, sizeLabel, textcolor);
         if(sizeTextTexture != NULL) {
             int textW, textH;
             SDL_QueryTexture(sizeTextTexture, NULL, NULL, &textW, &textH);
@@ -118,6 +118,7 @@ void initGUI(int numDisks, struct DISK_INFO* disks) {
     SDL_RenderPresent(renderer);
 
     SDL_Color rectColor = {255, 255, 255, 255};
+    SDL_Color textColor = {255, 255, 255, 255}
     SDL_Texture* texture = loadTexture(renderer, "./src/assets/img/hdd (Nikita Golubev).png");
     TTF_Font* font = TTF_OpenFont("./src/assets/fonts/Roboto-Regular.ttf", 24);
 
@@ -135,10 +136,10 @@ void initGUI(int numDisks, struct DISK_INFO* disks) {
             }
         }
 
-        SDL_SetRenderDrawColor(renderer, 50, 54, 55, 255);
+        SDL_SetRenderDrawColor(renderer, 38, 41, 41, 255);
         SDL_RenderClear(renderer);
 
-        drawGrid(renderer, numDisks, rectW, rectH, rectColor, texture, font, disks);
+        drawGrid(renderer, numDisks, rectW, rectH, rectColor, textColor texture, font, disks);
 
         SDL_RenderPresent(renderer);
 
