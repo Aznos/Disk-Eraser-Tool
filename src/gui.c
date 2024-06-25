@@ -76,6 +76,17 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
             SDL_Rect dstRect = {x + (rectW - textureW) / 2, y + (rectH - textureH) / 2, textureW, textureH};
             SDL_RenderCopy(renderer, texture, NULL, &dstRect);
         }
+
+        char sizeLabel[20];
+        snprintf(sizeLabel, sizeof(sizeLabel), "Size: Placeholder");
+        SDL_Texture* sizeTextTexture = renderText(renderer, font, sizeLabel, color);
+        if(sizeTextTexture != NULL) {
+            int textW, textH;
+            SDL_QueryTexture(sizeTextTexture, NULL, NULL, &textW, &textH);
+            SDL_Rect textRect = {x + (rectW - textW) / 2, y + rectH + 5, textW, textH};
+            SDL_RenderCopy(renderer, sizeTextTexture, NULL, &textRect);
+            SDL_DestroyTexture(sizeTextTexture);
+        }
     }
 }
 
@@ -120,8 +131,11 @@ void initGUI() {
         }
     }
 
+    TTF_CloseFont(font);
     SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    TTF_Quit();
+    IMG_Quit();
     SDL_Quit();
 }
