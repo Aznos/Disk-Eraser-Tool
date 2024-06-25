@@ -30,7 +30,6 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
 
         char sizePath[1035];
         if (fgets(sizePath, sizeof(sizePath) - 1, sizeFp) != NULL) {
-
             if (strstr(sizePath, "GB") != NULL) {
                 float sizeGB;
                 sscanf(sizePath, "   Disk Size: %f GB", &sizeGB);

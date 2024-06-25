@@ -1,7 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#define MAX_DISKS 16
+#define MAX_DISKS 9
 #define KB (1024ULL)
 #define MB (1024 * KB)
 #define GB (1024 * MB)
