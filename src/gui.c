@@ -46,8 +46,6 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
         if(texture != NULL) {
             int textureW, textureH;
             SDL_QueryTexture(texture, NULL, NULL, &textureW, &textureH);
-            textureW *= 6;
-            textureH *= 6;
             SDL_Rect dstRect = {x + (rectW - textureW) / 2, y + (rectH - textureH) / 2, textureW, textureH};
             SDL_RenderCopy(renderer, texture, NULL, &dstRect);
         }
@@ -64,7 +62,7 @@ void initGUI() {
     SDL_RenderPresent(renderer);
 
     SDL_Color rectColor = {255, 255, 255, 255};
-    SDL_Texture* texture = loadTexture(renderer, "./src/assets/img/hdd.png");
+    SDL_Texture* texture = loadTexture(renderer, "./src/assets/img/hdd (Nikita Golubev).png");
 
     SDL_Event event;
     int running = 1;
