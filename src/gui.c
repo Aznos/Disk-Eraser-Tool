@@ -46,6 +46,8 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
         if(texture != NULL) {
             int textureW, textureH;
             SDL_QueryTexture(texture, NULL, NULL, &textureW, &textureH);
+            textureW *= 6;
+            textureH *= 6;
             SDL_Rect dstRect = {x + (rectW - textureW) / 2, y + (rectH - textureH) / 2, textureW, textureH};
             SDL_RenderCopy(renderer, texture, NULL, &dstRect);
         }
