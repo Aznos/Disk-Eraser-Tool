@@ -11,7 +11,16 @@ void drawDiskRect(SDL_Renderer* renderer, int x, int y, int w, int h, SDL_Color 
     SDL_RenderFillRect(renderer, &rect);
 }
 
-void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Color color) {
+SDL_Texture* loadTexture(SDL_Renderer* renderer, const char* file) {
+    SDL_Texture* texture = IMG_LoadTexture(renderer, file);
+    if(texture == NULL) {
+        printf("Failed to load texture: %s\n", IMG_GetError());
+    }
+
+    return texture;
+}
+
+void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Color color, SDL_Texture* texture) {
     if(numDisks > MAX_DISKS) {
         numDisks = MAX_DISKS;
     }
@@ -33,11 +42,19 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
         int y = startY + row * (rectH + rectH / 4);
 
         drawDiskRect(renderer, x, y, rectW, rectH, color);
+
+        if(texture != NULL) {
+            int textureW, textureH;
+            SDL_QueryTexture(texture, NULL, NULL, &textureW, &textureH);
+            SDL_Rect dstRect = {x + (rectW - textureW) / 2, y + (rectH - textureH) / 2, textureW, textureH};
+            SDL_RenderCopy(renderer, texture, NULL, &dstRect);
+        }
     }
 }
 
 void initGUI() {
     SDL_Init(SDL_INIT_VIDEO);
+    IMG_Init(IMG_INIT_PNG);
     SDL_Window* window = SDL_CreateWindow("Disk Erase Tool", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREENW, SCREENH, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawColor(renderer, 50, 54, 55, 255);
@@ -45,6 +62,7 @@ void initGUI() {
     SDL_RenderPresent(renderer);
 
     SDL_Color rectColor = {255, 255, 255, 255};
+    SDL_Texture* texture = loadTexture(renderer, "../assets/img/hdd.png");
 
     SDL_Event event;
     int running = 1;
@@ -63,7 +81,7 @@ void initGUI() {
         SDL_SetRenderDrawColor(renderer, 50, 54, 55, 255);
         SDL_RenderClear(renderer);
 
-        drawGrid(renderer, numDisks, rectW, rectH, rectColor);
+        drawGrid(renderer, numDisks, rectW, rectH, rectColor, texture);
 
         SDL_RenderPresent(renderer);
 
@@ -73,6 +91,7 @@ void initGUI() {
         }
     }
 
+    SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
