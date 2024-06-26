@@ -9,20 +9,20 @@ const int SCREENW = 1000;
 const int SCREENH = 600;
 
 void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Color color, SDL_Color textColor, SDL_Texture* texture, TTF_Font* font, struct DISK_INFO* disks) {
-    if(numDisks > MAX_DISKS) {
+    if (numDisks > MAX_DISKS) {
         numDisks = MAX_DISKS;
     }
 
     int cols = (numDisks > MAX_DISKS_PER_ROW) ? MAX_DISKS_PER_ROW : numDisks;
     int rows = (numDisks + MAX_DISKS_PER_ROW - 1) / MAX_DISKS_PER_ROW;
-    
+
     int gridWidth = cols * rectW + (cols - 1) * (rectW / 4);
     int gridHeight = rows * rectH + (rows - 1) * (rectH / 4);
 
     int startX = (SCREENW - gridWidth) / 2;
     int startY = (SCREENH - gridHeight) / 2;
 
-    for(int i = 0; i < numDisks; i++) {
+    for (int i = 0; i < numDisks; i++) {
         int row = i / cols;
         int col = i % cols;
 
@@ -34,7 +34,7 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
         char label[20];
         snprintf(label, sizeof(label), "Disk %d", i + 1);
         SDL_Texture* textTexture = renderText(renderer, font, label, textColor);
-        if(textTexture != NULL) {
+        if (textTexture != NULL) {
             int textW, textH;
             SDL_QueryTexture(textTexture, NULL, NULL, &textW, &textH);
             SDL_Rect textRect = {x + (rectW - textW) / 2, y - textH - 5, textW, textH};
@@ -42,7 +42,7 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
             SDL_DestroyTexture(textTexture);
         }
 
-        if(texture != NULL) {
+        if (texture != NULL) {
             int textureW, textureH;
             SDL_QueryTexture(texture, NULL, NULL, &textureW, &textureH);
             SDL_Rect dstRect = {x + (rectW - textureW) / 2, y + (rectH - textureH) / 2, textureW, textureH};
@@ -53,7 +53,7 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
         char buffer[35];
         snprintf(sizeLabel, sizeof(sizeLabel), "Size: %s", formatSize(buffer, disks[i].size));
         SDL_Texture* sizeTextTexture = renderText(renderer, font, sizeLabel, textColor);
-        if(sizeTextTexture != NULL) {
+        if (sizeTextTexture != NULL) {
             int textW, textH;
             SDL_QueryTexture(sizeTextTexture, NULL, NULL, &textW, &textH);
             SDL_Rect textRect = {x + (rectW - textW) / 2, y + rectH + 5, textW, textH};
@@ -61,6 +61,26 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
             SDL_DestroyTexture(sizeTextTexture);
         }
     }
+}
+
+void eraseDiskGUI(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font) {
+    SDL_Color textColor = {255, 78, 78, 255};
+    SDL_SetRenderDrawColor(renderer, 50, 54, 55, 255);
+    SDL_RenderClear(renderer);
+
+    char line[128];
+    snprintf(line, sizeof(line), "Erasing disk..");
+
+    SDL_Texture* textTexture = renderText(renderer, font, line, textColor);
+    if (textTexture != NULL) {
+        int textW, textH;
+        SDL_QueryTexture(textTexture, NULL, NULL, &textW, &textH);
+        SDL_Rect textRect = {50, 50, textW, textH};
+        SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
+        SDL_DestroyTexture(textTexture);
+    }
+
+    SDL_RenderPresent(renderer);
 }
 
 void drawDiskInfo(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font, int* running) {
@@ -127,24 +147,21 @@ void drawDiskInfo(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font
     SDL_RenderPresent(renderer);
 
     SDL_Event event;
-    while(1) {
-        while(SDL_PollEvent(&event)) {
-            switch(event.type) {
+    while (1) {
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
                 case SDL_QUIT:
                     *running = 0;
                     return;
                 case SDL_MOUSEBUTTONDOWN:
-                    if(event.button.button == SDL_BUTTON_LEFT) {
+                    if (event.button.button == SDL_BUTTON_LEFT) {
                         int x = event.button.x;
                         int y = event.button.y;
 
-                        if(x >= yesButtonRect.x && x <= yesButtonRect.x + yesButtonRect.w && y >= yesButtonRect.y && y <= yesButtonRect.y + yesButtonRect.h) {
-                            printf("Deleting");
-                            *running = 0;
+                        if (x >= yesButtonRect.x && x <= yesButtonRect.x + yesButtonRect.w && y >= yesButtonRect.y && y <= yesButtonRect.y + yesButtonRect.h) {
+                            eraseDiskGUI(renderer, disk, font);
                             return;
-                        } else if(x >= noButtonRect.x && x <= noButtonRect.x + noButtonRect.w && y >= noButtonRect.y && y <= noButtonRect.y + noButtonRect.h) {
-                            printf("No delete");
-                            *running = 0;
+                        } else if (x >= noButtonRect.x && x <= noButtonRect.x + noButtonRect.w && y >= noButtonRect.y && y <= noButtonRect.y + noButtonRect.h) {
                             return;
                         }
                     }
