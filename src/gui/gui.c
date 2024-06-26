@@ -65,7 +65,8 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
 
 void drawDiskInfo(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font) {
     SDL_Color textColor = {255, 78, 78, 255};
-    SDL_SetRenderDrawColor(renderer, 50, 54, 55, 255);
+    SDL_Color backgroundColor = {50, 54, 55, 255};
+    SDL_SetRenderDrawColor(renderer, backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
     SDL_RenderClear(renderer);
 
     char line1[128];
@@ -78,40 +79,50 @@ void drawDiskInfo(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font
     SDL_Texture* textTexture1 = renderText(renderer, font, line1, textColor);
     SDL_Texture* textTexture2 = renderText(renderer, font, line2, textColor);
 
-    if (textTexture1 != NULL && textTexture2 != NULL) {
-        int textW1, textH1, textW2, textH2;
-        SDL_QueryTexture(textTexture1, NULL, NULL, &textW1, &textH1);
-        SDL_QueryTexture(textTexture2, NULL, NULL, &textW2, &textH2);
+    int textW1, textH1, textW2, textH2;
+    SDL_QueryTexture(textTexture1, NULL, NULL, &textW1, &textH1);
+    SDL_QueryTexture(textTexture2, NULL, NULL, &textW2, &textH2);
 
-        SDL_Rect textRect1 = {50, 50, textW1, textH1};
-        SDL_Rect textRect2 = {50, 50 + textH1 + 10, textW2, textH2};
+    int centerX = SCREENW / 2;
+    int centerY = SCREENH / 2;
 
-        SDL_RenderCopy(renderer, textTexture1, NULL, &textRect1);
-        SDL_RenderCopy(renderer, textTexture2, NULL, &textRect2);
+    SDL_Rect textRect1 = {centerX - textW1 / 2, centerY - textH1 - 20, textW1, textH1};
+    SDL_Rect textRect2 = {centerX - textW2 / 2, centerY, textW2, textH2};
 
-        SDL_DestroyTexture(textTexture1);
-        SDL_DestroyTexture(textTexture2);
-    }
+    SDL_RenderCopy(renderer, textTexture1, NULL, &textRect1);
+    SDL_RenderCopy(renderer, textTexture2, NULL, &textRect2);
 
-    // Draw buttons
+    SDL_DestroyTexture(textTexture1);
+    SDL_DestroyTexture(textTexture2);
+
     SDL_Color buttonColor = {255, 78, 78, 255};
     SDL_Color buttonTextColor = {255, 255, 255, 255};
+
+    int buttonWidth = 150;
+    int buttonHeight = 50;
+    int buttonY = centerY + textH2 + 40;
+
     SDL_Texture* yesTexture = renderText(renderer, font, "Yes", buttonTextColor);
     SDL_Texture* noTexture = renderText(renderer, font, "No", buttonTextColor);
 
-    if (yesTexture != NULL && noTexture != NULL) {
-        int textW, textH;
-        SDL_QueryTexture(yesTexture, NULL, NULL, &textW, &textH);
-        SDL_Rect yesRect = {100, SCREENH - 50 - textH, textW, textH};
-        SDL_RenderCopy(renderer, yesTexture, NULL, &yesRect);
+    SDL_Rect yesButtonRect = {centerX - buttonWidth - 20, buttonY, buttonWidth, buttonHeight};
+    SDL_Rect noButtonRect = {centerX + 20, buttonY, buttonWidth, buttonHeight};
 
-        SDL_QueryTexture(noTexture, NULL, NULL, &textW, &textH);
-        SDL_Rect noRect = {50 + textW + 150, SCREENH - 50 - textH, textW, textH};
-        SDL_RenderCopy(renderer, noTexture, NULL, &noRect);
+    drawDiskRect(renderer, yesButtonRect.x, yesButtonRect.y, yesButtonRect.w, yesButtonRect.h, buttonColor);
+    drawDiskRect(renderer, noButtonRect.x, noButtonRect.y, noButtonRect.w, noButtonRect.h, buttonColor);
 
-        SDL_DestroyTexture(yesTexture);
-        SDL_DestroyTexture(noTexture);
-    }
+    int textW, textH;
+
+    SDL_QueryTexture(yesTexture, NULL, NULL, &textW, &textH);
+    SDL_Rect yesTextRect = {yesButtonRect.x + (yesButtonRect.w - textW) / 2, yesButtonRect.y + (yesButtonRect.h - textH) / 2, textW, textH};
+    SDL_RenderCopy(renderer, yesTexture, NULL, &yesTextRect);
+
+    SDL_QueryTexture(noTexture, NULL, NULL, &textW, &textH);
+    SDL_Rect noTextRect = {noButtonRect.x + (noButtonRect.w - textW) / 2, noButtonRect.y + (noButtonRect.h - textH) / 2, textW, textH};
+    SDL_RenderCopy(renderer, noTexture, NULL, &noTextRect);
+
+    SDL_DestroyTexture(yesTexture);
+    SDL_DestroyTexture(noTexture);
 
     SDL_RenderPresent(renderer);
 }
