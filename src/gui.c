@@ -52,7 +52,7 @@ char* formatSize(char* buffer, size_t size) {
     return buffer;
 }
 
-void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Color color, SDL_Color textcolor, SDL_Texture* texture, TTF_Font* font, struct DISK_INFO* disks) {
+void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Color color, SDL_Color textColor, SDL_Texture* texture, TTF_Font* font, struct DISK_INFO* disks) {
     if(numDisks > MAX_DISKS) {
         numDisks = MAX_DISKS;
     }
@@ -77,11 +77,11 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
 
         char label[20];
         snprintf(label, sizeof(label), "Disk %d", i + 1);
-        SDL_Texture* textTexture = renderText(renderer, font, label, textcolor);
+        SDL_Texture* textTexture = renderText(renderer, font, label, textColor);
         if(textTexture != NULL) {
             int textW, textH;
             SDL_QueryTexture(textTexture, NULL, NULL, &textW, &textH);
-            SDL_Rect textRect = {x + (rectW - rectW) / 2, y - textH - 5, textW, textH};
+            SDL_Rect textRect = {x + (rectW - textW) / 2, y - textH - 5, textW, textH};
             SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
             SDL_DestroyTexture(textTexture);
         }
@@ -96,7 +96,7 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
         char sizeLabel[20];
         char buffer[35];
         snprintf(sizeLabel, sizeof(sizeLabel), "Size: %s", formatSize(buffer, disks[i].size));
-        SDL_Texture* sizeTextTexture = renderText(renderer, font, sizeLabel, textcolor);
+        SDL_Texture* sizeTextTexture = renderText(renderer, font, sizeLabel, textColor);
         if(sizeTextTexture != NULL) {
             int textW, textH;
             SDL_QueryTexture(sizeTextTexture, NULL, NULL, &textW, &textH);
@@ -137,18 +137,24 @@ void initGUI(int numDisks, struct DISK_INFO* disks) {
                     if(event.button.button == SDL_BUTTON_LEFT) {
                         int x = event.button.x;
                         int y = event.button.y;
-                        for(int i = 0; i < numDisks; i++) {
-                            int row = i / MAX_DISKS_PER_ROW;
-                            int col = i % MAX_DISKS_PER_ROW;
+                        int cols = (numDisks > MAX_DISKS_PER_ROW) ? MAX_DISKS_PER_ROW : numDisks;
+                        int rows = (numDisks + MAX_DISKS_PER_ROW - 1) / MAX_DISKS_PER_ROW;
+                        
+                        int gridWidth = cols * rectW + (cols - 1) * (rectW / 4);
+                        int gridHeight = rows * rectH + (rows - 1) * (rectH / 4);
 
-                            int startX = (SCREENW - MAX_DISKS_PER_ROW * rectW + (MAX_DISKS_PER_ROW - 1) * (rectW / 4)) / 2;
-                            int startY = (SCREENH - (numDisks / MAX_DISKS_PER_ROW) * rectH + ((numDisks / MAX_DISKS_PER_ROW) - 1) * (rectH / 4)) / 2;
+                        int startX = (SCREENW - gridWidth) / 2;
+                        int startY = (SCREENH - gridHeight) / 2;
+
+                        for(int i = 0; i < numDisks; i++) {
+                            int row = i / cols;
+                            int col = i % cols;
 
                             int diskX = startX + col * (rectW + rectW / 4);
                             int diskY = startY + row * (rectH + rectH / 4);
 
                             if(x >= diskX && x <= diskX + rectW && y >= diskY && y <= diskY + rectH) {
-                                printf("test\n");
+                                printf("Disk %d clicked\n", i + 1);
                             }
                         }
                     }
