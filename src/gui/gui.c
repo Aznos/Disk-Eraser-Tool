@@ -63,6 +63,28 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
     }
 }
 
+void drawDiskInfo(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font) {
+    SDL_Color textColor = {255, 78, 78, 255};
+    SDL_SetRenderDrawColor(renderer, 50, 54, 55, 255);
+    SDL_RenderClear(renderer);
+
+    char text[256];
+    char buffer[35];
+    formatSize(buffer, disk->size);
+    snprintf(text, sizeof(text), "Are you sure you would like to delete the disk with size: %s?\nThis action is irreversible and cannot be undone!", buffer);
+    
+    SDL_Texture* textTexture = renderText(renderer, font, text, textColor);
+    if (textTexture != NULL) {
+        int textW, textH;
+        SDL_QueryTexture(textTexture, NULL, NULL, &textW, &textH);
+        SDL_Rect textRect = {50, 50, textW, textH};
+        SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
+        SDL_DestroyTexture(textTexture);
+    }
+
+    SDL_RenderPresent(renderer);
+}
+
 void initGUI(int numDisks, struct DISK_INFO* disks) {
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
@@ -82,6 +104,8 @@ void initGUI(int numDisks, struct DISK_INFO* disks) {
     int running = 1;
     int rectW = 150;
     int rectH = 150;
+    int showDetails = 0;
+    struct DISK_INFO selectedDisk;
     while(running) {
         unsigned int frameStart = SDL_GetTicks();
         while(SDL_PollEvent(&event)) {
@@ -110,7 +134,8 @@ void initGUI(int numDisks, struct DISK_INFO* disks) {
                             int diskY = startY + row * (rectH + rectH / 4);
 
                             if(x >= diskX && x <= diskX + rectW && y >= diskY && y <= diskY + rectH) {
-                                printf("Disk %d clicked\n", i + 1);
+                                selectedDisk = disks[i];
+                                showDetails = 1;
                             }
                         }
                     }
@@ -118,12 +143,16 @@ void initGUI(int numDisks, struct DISK_INFO* disks) {
             }
         }
 
-        SDL_SetRenderDrawColor(renderer, 50, 54, 55, 255);
-        SDL_RenderClear(renderer);
+        if (showDetails) {
+            drawDiskInfo(renderer, &selectedDisk, font);
+        } else {
+            SDL_SetRenderDrawColor(renderer, 50, 54, 55, 255);
+            SDL_RenderClear(renderer);
 
-        drawGrid(renderer, numDisks, rectW, rectH, rectColor, textColor, texture, font, disks);
+            drawGrid(renderer, numDisks, rectW, rectH, rectColor, textColor, texture, font, disks);
 
-        SDL_RenderPresent(renderer);
+            SDL_RenderPresent(renderer);
+        }
 
         unsigned int frameTime = SDL_GetTicks() - frameStart;
         if(frameTime < FRAME_DELAY) {
