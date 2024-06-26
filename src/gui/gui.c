@@ -63,7 +63,7 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
     }
 }
 
-void drawDiskInfo(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font) {
+void drawDiskInfo(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font, int* running) {
     SDL_Color textColor = {255, 78, 78, 255};
     SDL_Color backgroundColor = {50, 54, 55, 255};
     SDL_SetRenderDrawColor(renderer, backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
@@ -125,6 +125,33 @@ void drawDiskInfo(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font
     SDL_DestroyTexture(noTexture);
 
     SDL_RenderPresent(renderer);
+
+    SDL_Event event;
+    while(1) {
+        while(SDL_PollEvent(&event)) {
+            switch(event.type) {
+                case SDL_QUIT:
+                    *running = 0;
+                    return;
+                case SDL_MOUSEBUTTONDOWN:
+                    if(event.button.button == SDL_BUTTON_LEFT) {
+                        int x = event.button.x;
+                        int y = event.button.y;
+
+                        if(x >= yesButtonRect.x && x <= yesButtonRect.x + yesButtonRect.w && y >= yesButtonRect.y && y <= yesButtonRect.y + yesButtonRect.h) {
+                            printf("Deleting");
+                            *running = 0;
+                            return;
+                        } else if(x >= noButtonRect.x && x <= noButtonRect.x + noButtonRect.w && y >= noButtonRect.y && y <= noButtonRect.y + noButtonRect.h) {
+                            printf("No delete");
+                            *running = 0;
+                            return;
+                        }
+                    }
+                    break;
+            }
+        }
+    }
 }
 
 void initGUI(int numDisks, struct DISK_INFO* disks) {
@@ -186,7 +213,7 @@ void initGUI(int numDisks, struct DISK_INFO* disks) {
         }
 
         if (showDetails) {
-            drawDiskInfo(renderer, &selectedDisk, font);
+            drawDiskInfo(renderer, &selectedDisk, font, &running);
         } else {
             SDL_SetRenderDrawColor(renderer, 50, 54, 55, 255);
             SDL_RenderClear(renderer);
