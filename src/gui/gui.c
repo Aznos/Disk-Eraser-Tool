@@ -68,18 +68,29 @@ void drawDiskInfo(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font
     SDL_SetRenderDrawColor(renderer, 50, 54, 55, 255);
     SDL_RenderClear(renderer);
 
-    char text[256];
+    char line1[128];
+    char line2[128];
     char buffer[35];
     formatSize(buffer, disk->size);
-    snprintf(text, sizeof(text), "Are you sure you would like to delete the disk with size: %s?\nThis action is irreversible and cannot be undone!", buffer);
-    
-    SDL_Texture* textTexture = renderText(renderer, font, text, textColor);
-    if (textTexture != NULL) {
-        int textW, textH;
-        SDL_QueryTexture(textTexture, NULL, NULL, &textW, &textH);
-        SDL_Rect textRect = {50, 50, textW, textH};
-        SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
-        SDL_DestroyTexture(textTexture);
+    snprintf(line1, sizeof(line1), "Are you sure you would like to delete the disk with size: %s?", buffer);
+    snprintf(line2, sizeof(line2), "This action is irreversible and cannot be undone!");
+
+    SDL_Texture* textTexture1 = renderText(renderer, font, line1, textColor);
+    SDL_Texture* textTexture2 = renderText(renderer, font, line2, textColor);
+
+    if (textTexture1 != NULL && textTexture2 != NULL) {
+        int textW1, textH1, textW2, textH2;
+        SDL_QueryTexture(textTexture1, NULL, NULL, &textW1, &textH1);
+        SDL_QueryTexture(textTexture2, NULL, NULL, &textW2, &textH2);
+
+        SDL_Rect textRect1 = {50, 50, textW1, textH1};
+        SDL_Rect textRect2 = {50, 50 + textH1 + 10, textW2, textH2};
+
+        SDL_RenderCopy(renderer, textTexture1, NULL, &textRect1);
+        SDL_RenderCopy(renderer, textTexture2, NULL, &textRect2);
+
+        SDL_DestroyTexture(textTexture1);
+        SDL_DestroyTexture(textTexture2);
     }
 
     SDL_RenderPresent(renderer);
