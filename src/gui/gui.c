@@ -93,6 +93,26 @@ void drawDiskInfo(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font
         SDL_DestroyTexture(textTexture2);
     }
 
+    // Draw buttons
+    SDL_Color buttonColor = {255, 78, 78, 255};
+    SDL_Color buttonTextColor = {255, 255, 255, 255};
+    SDL_Texture* yesTexture = renderText(renderer, font, "Yes", buttonTextColor);
+    SDL_Texture* noTexture = renderText(renderer, font, "No", buttonTextColor);
+
+    if (yesTexture != NULL && noTexture != NULL) {
+        int textW, textH;
+        SDL_QueryTexture(yesTexture, NULL, NULL, &textW, &textH);
+        SDL_Rect yesRect = {100, SCREENH - 50 - textH, textW, textH};
+        SDL_RenderCopy(renderer, yesTexture, NULL, &yesRect);
+
+        SDL_QueryTexture(noTexture, NULL, NULL, &textW, &textH);
+        SDL_Rect noRect = {50 + textW + 150, SCREENH - 50 - textH, textW, textH};
+        SDL_RenderCopy(renderer, noTexture, NULL, &noRect);
+
+        SDL_DestroyTexture(yesTexture);
+        SDL_DestroyTexture(noTexture);
+    }
+
     SDL_RenderPresent(renderer);
 }
 
