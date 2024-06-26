@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -g
-SRCS = $(wildcard src/*.c)
+SRCS = $(wildcard src/*.c src/gui/*.c)
 INCLUDES = -Iinclude -I/opt/homebrew/include/SDL2 -D_THREAD_SAFE
 LIBS = -L/opt/homebrew/lib -lSDL2 -lSDL2_image -lSDL2_ttf
 TARGET = bin/det
