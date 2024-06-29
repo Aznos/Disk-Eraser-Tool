@@ -63,13 +63,14 @@ void drawGrid(SDL_Renderer* renderer, int numDisks, int rectW, int rectH, SDL_Co
     }
 }
 
-void eraseDiskGUI(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font) {
+void eraseDiskGUI(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font, int* running) {
     SDL_Color textColor = {255, 78, 78, 255};
-    SDL_SetRenderDrawColor(renderer, 50, 54, 55, 255);
+    SDL_Color backgroundColor = {50, 54, 55, 255};
+    SDL_SetRenderDrawColor(renderer, backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
     SDL_RenderClear(renderer);
 
     char line[128];
-    snprintf(line, sizeof(line), "Erasing disk..");
+    snprintf(line, sizeof(line), "Erasing disk...");
 
     SDL_Texture* textTexture = renderText(renderer, font, line, textColor);
     if (textTexture != NULL) {
@@ -81,6 +82,29 @@ void eraseDiskGUI(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font
     }
 
     SDL_RenderPresent(renderer);
+
+    snprintf(line, sizeof(line), "Disk erased successfully.");
+    textTexture = renderText(renderer, font, line, textColor);
+    if (textTexture != NULL) {
+        int textW, textH;
+        SDL_QueryTexture(textTexture, NULL, NULL, &textW, &textH);
+        SDL_Rect textRect = {50, 150, textW, textH};
+        SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
+        SDL_DestroyTexture(textTexture);
+    }
+
+    SDL_RenderPresent(renderer);
+
+    SDL_Event event;
+    while (1) {
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT:
+                    *running = 0;
+                    return;
+            }
+        }
+    }
 }
 
 void drawDiskInfo(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font, int* running) {
@@ -154,18 +178,21 @@ void drawDiskInfo(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font
                     *running = 0;
                     return;
                 case SDL_MOUSEBUTTONDOWN:
-                    if (event.button.button == SDL_BUTTON_LEFT) {
-                        int x = event.button.x;
-                        int y = event.button.y;
+                if (event.button.button == SDL_BUTTON_LEFT) {
+                    int x = event.button.x;
+                    int y = event.button.y;
 
-                        if (x >= yesButtonRect.x && x <= yesButtonRect.x + yesButtonRect.w && y >= yesButtonRect.y && y <= yesButtonRect.y + yesButtonRect.h) {
-                            eraseDiskGUI(renderer, disk, font);
-                            return;
-                        } else if (x >= noButtonRect.x && x <= noButtonRect.x + noButtonRect.w && y >= noButtonRect.y && y <= noButtonRect.y + noButtonRect.h) {
-                            return;
-                        }
+                    if (x >= yesButtonRect.x && x <= yesButtonRect.x + yesButtonRect.w && y >= yesButtonRect.y && y <= yesButtonRect.y + yesButtonRect.h) {
+                        SDL_SetRenderDrawColor(renderer, backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
+                        SDL_RenderClear(renderer);
+                        SDL_RenderPresent(renderer);
+                        eraseDiskGUI(renderer, disk, font, running);
+                        return;
+                    } else if (x >= noButtonRect.x && x <= noButtonRect.x + noButtonRect.w && y >= noButtonRect.y && y <= noButtonRect.y + noButtonRect.h) {
+                        return;
                     }
-                    break;
+                }
+                break;
             }
         }
     }
