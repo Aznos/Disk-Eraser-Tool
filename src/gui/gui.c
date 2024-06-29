@@ -81,8 +81,6 @@ void eraseDiskGUI(SDL_Renderer* renderer, struct DISK_INFO* disk, TTF_Font* font
         SDL_DestroyTexture(textTexture);
     }
 
-    SDL_RenderPresent(renderer);
-
     snprintf(line, sizeof(line), "Disk erased successfully.");
     textTexture = renderText(renderer, font, line, textColor);
     if (textTexture != NULL) {
