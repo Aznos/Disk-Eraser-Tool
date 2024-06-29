@@ -11,6 +11,7 @@ int numDisks;
 
 struct DISK_INFO {
     unsigned long long size;
+    char path[256];
 };
 
 typedef struct {

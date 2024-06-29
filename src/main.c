@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
                     }
 
                     for(int i = 0; i < numDisks; i++) {
-                        eraseDisk(disks[i], i, passes);
+                        eraseDisk(disks[i], passes);
                     }
                 } else {
                     printf("%s\nQuitting program..\n", YELLOW);
@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
                             passes = 5;
                         }
 
-                        eraseDisk(disks[diskNum - 1], diskNum - 1, passes);
+                        eraseDisk(disks[diskNum - 1], passes);
                     } else {
                         printf("%s\nQuitting program..\n", YELLOW);
                     }

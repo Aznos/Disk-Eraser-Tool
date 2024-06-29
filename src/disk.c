@@ -1,14 +1,13 @@
 #include "include/disk.h"
 #include "include/colors.h"
-#include "include/main.h"
 #include "include/util.h"
 #include <stdio.h>
-#include <stdbool.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <fcntl.h>
 #include <time.h>
+#include <stdbool.h>
 
 void overwriteDisk(const char* diskPath, bool random, unsigned long long size) {
     int disk = open(diskPath, O_WRONLY);
@@ -53,11 +52,11 @@ void overwriteDisk(const char* diskPath, bool random, unsigned long long size) {
     close(disk);
 }
 
-void eraseDisk(struct DISK_INFO disk, int num, int passes) {
+void eraseDisk(struct DISK_INFO disk, int passes) {
     printf(CLEAR_TERMINAL);
-    printf("%sErasing disk %d\n", YELLOW, num + 1);
+    printf("%sErasing disk %s\n", YELLOW, disk.path);
     char diskPath[50];
-    snprintf(diskPath, sizeof(diskPath), "/dev/disk%d", num);
+    snprintf(diskPath, sizeof(diskPath), "/dev/%s", disk.path);
 
     for(int i = 0; i < passes; i++) {
         if(i < 1) {

@@ -19,6 +19,8 @@ void getDisks(struct DISK_INFO disks[], int* numDisks) {
 
     while (fgets(path, sizeof(path) - 1, fp) != NULL) {
         path[strcspn(path, "\n")] = 0;
+        strncpy(disks[diskCount].path, path + 5, sizeof(disks[diskCount].path) - 1); // Skip "/dev/"
+
         char sizeCommand[100];
         snprintf(sizeCommand, sizeof(sizeCommand), "diskutil info %s | grep 'Disk Size'", path);
 

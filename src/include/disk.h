@@ -5,6 +5,6 @@
 
 #include "main.h"
 
-void eraseDisk(struct DISK_INFO disk, int num, int passes);
+void eraseDisk(struct DISK_INFO disk, int passes);
 
 #endif
